@@ -9,6 +9,10 @@ Static is a simple static files HTTP server, as a global tool.
 
 ## Install
 
+Requirements:
+
+- .NET 6 SDK
+
 Run the following command to install this tool:
 
 ```bash
