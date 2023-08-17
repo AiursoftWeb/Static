@@ -7,6 +7,34 @@
 
 Static is a simple static files HTTP server, as a global tool.
 
+## Install
+
+Run the following command to install this tool:
+
+```bash
+dotnet tool install --global Aiursoft.Static
+```
+
+## Usage
+
+After getting the binary, run it directly in the terminal.
+
+```bash
+$ ./static.exe --help
+Description:
+  A simple static files HTTP server.
+
+Usage:
+  static [options]
+
+Options:
+  --path <path>      The folder to start the server. [default: .]
+  -p, --port <port>  The port to listen for the server. [default: 8080]
+  --version          Show version information
+  -?, -h, --help     Show help and usage information
+
+It will start an HTTP server on http://localhost:8080.
+
 ## How to contribute
 
 There are many ways to contribute to the project: logging bugs, submitting pull requests, reporting issues, and creating suggestions.
