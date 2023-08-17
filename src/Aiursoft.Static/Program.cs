@@ -17,7 +17,7 @@ public class Program
             getDefaultValue: () => ".",
             description: "The folder to start the server.");
         var portOption = new Option<int>(
-            aliases: new string[] { "--port", "-p" },
+            aliases: new [] { "--port", "-p" },
             getDefaultValue: () => 8080,
             description: "The port to listen for the server.");
 
