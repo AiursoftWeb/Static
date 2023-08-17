@@ -16,7 +16,7 @@ Requirements:
 Run the following command to install this tool:
 
 ```bash
-dotnet tool install --global Aiursoft.Static
+dotnet tool install --global Static
 ```
 
 ## Usage
