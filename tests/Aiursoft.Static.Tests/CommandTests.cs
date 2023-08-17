@@ -1,6 +1,5 @@
 ﻿using System.CommandLine;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Reflection;
 
 namespace Aiursoft.Static.Tests;
 
