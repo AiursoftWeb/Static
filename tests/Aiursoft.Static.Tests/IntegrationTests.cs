@@ -1,18 +1,17 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using System.Net;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Net;
 
 namespace Aiursoft.Static.Tests
 {
     [TestClass]
     public class IntegrationTests
     {
-        public string _testPath;
-        public WebApplication _server;
+        private readonly WebApplication _server;
         public IntegrationTests()
         {
-            _testPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets");
-            _server = Program.BuildApp(_testPath, 8080);
+            var testPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets");
+            _server = Program.BuildApp(testPath, 8080);
         }
 
         [TestInitialize]
