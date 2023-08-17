@@ -38,6 +38,7 @@ Options:
   -?, -h, --help     Show help and usage information
 
 It will start an HTTP server on http://localhost:8080.
+```
 
 ## How to contribute
 
