@@ -8,6 +8,7 @@
 	  <AssemblyName>static</AssemblyName>
 	  <RootNamespace>Aiursoft.Static</RootNamespace>
 	  <!--Tool-->
+	  <IsPackable>true</IsPackable>
 	  <PackAsTool>true</PackAsTool>
 	  <ToolCommandName>static</ToolCommandName>
 	  <!--Best practice-->
