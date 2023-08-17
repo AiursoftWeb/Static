@@ -3,12 +3,34 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{1508C0D7-17A7-442F-8E97-C3CFEB59FF5A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{C1EA94C5-B6F2-4859-BACF-7A0BCB3854AA}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aiursoft.Static", "src\Aiursoft.Static\Aiursoft.Static.csproj", "{AECE6B47-8A44-4CE6-9E7F-5C627A6DEADC}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aiursoft.Static.Tests", "tests\Aiursoft.Static.Tests\Aiursoft.Static.Tests.csproj", "{A165EAE6-1AD3-42D6-BEDE-10F10DC8DDCD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AECE6B47-8A44-4CE6-9E7F-5C627A6DEADC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AECE6B47-8A44-4CE6-9E7F-5C627A6DEADC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AECE6B47-8A44-4CE6-9E7F-5C627A6DEADC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AECE6B47-8A44-4CE6-9E7F-5C627A6DEADC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A165EAE6-1AD3-42D6-BEDE-10F10DC8DDCD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A165EAE6-1AD3-42D6-BEDE-10F10DC8DDCD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A165EAE6-1AD3-42D6-BEDE-10F10DC8DDCD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A165EAE6-1AD3-42D6-BEDE-10F10DC8DDCD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{AECE6B47-8A44-4CE6-9E7F-5C627A6DEADC} = {1508C0D7-17A7-442F-8E97-C3CFEB59FF5A}
+		{A165EAE6-1AD3-42D6-BEDE-10F10DC8DDCD} = {C1EA94C5-B6F2-4859-BACF-7A0BCB3854AA}
 	EndGlobalSection
 EndGlobal

@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+	  <!--Build and code-->
+	  <OutputType>Exe</OutputType>
+	  <Version>0.0.1</Version>
+	  <TargetFramework>net6.0</TargetFramework>
+	  <AssemblyName>static</AssemblyName>
+	  <RootNamespace>Aiursoft.Static</RootNamespace>
+	  <!--Tool-->
+	  <PackAsTool>true</PackAsTool>
+	  <ToolCommandName>static</ToolCommandName>
+	  <!--Best practice-->
+	  <ImplicitUsings>enable</ImplicitUsings>
+	  <Nullable>enable</Nullable>
+	  <!--Nuget-->
+	  <Company>Aiursoft</Company>
+	  <Product>Static</Product>
+	  <Authors>anduin</Authors>
+	  <Description>Static is a simple static files HTTP server, as a global tool.</Description>
+	  <PackageTags>cli nuget dotnet csproj http static</PackageTags>
+	  <RepositoryType>git</RepositoryType>
+	  <RepositoryUrl>https://gitlab.aiursoft.cn/aiursoft/static</RepositoryUrl>
+	  <PackageLicenseExpression>MIT</PackageLicenseExpression>
+	  <PackageProjectUrl>https://gitlab.aiursoft.cn/aiursoft/static</PackageProjectUrl>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.CommandLine" Version="2.0.0-beta4.22272.1" />
+  </ItemGroup>
+
+</Project>
