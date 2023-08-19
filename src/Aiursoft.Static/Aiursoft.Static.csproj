@@ -7,6 +7,7 @@
 	  <TargetFramework>net6.0</TargetFramework>
 	  <AssemblyName>static</AssemblyName>
 	  <RootNamespace>Aiursoft.Static</RootNamespace>
+	  <IsTestProject>false</IsTestProject>
 	  <!--Tool-->
 	  <IsPackable>true</IsPackable>
 	  <PackAsTool>true</PackAsTool>
