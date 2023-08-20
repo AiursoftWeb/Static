@@ -3,7 +3,7 @@
 [![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](https://gitlab.aiursoft.cn/aiursoft/static/-/blob/master/LICENSE)
 [![Pipeline stat](https://gitlab.aiursoft.cn/aiursoft/static/badges/master/pipeline.svg)](https://gitlab.aiursoft.cn/aiursoft/static/-/pipelines)
 [![Test Coverage](https://gitlab.aiursoft.cn/aiursoft/static/badges/master/coverage.svg)](https://gitlab.aiursoft.cn/aiursoft/static/-/pipelines)
-[![NuGet version (Aiursoft.Static)](https://img.shields.io/nuget/v/Aiursoft.Identity.svg)](https://www.nuget.org/packages/Aiursoft.Static/)
+[![NuGet version (Aiursoft.Static)](https://img.shields.io/nuget/v/Aiursoft.Static.svg)](https://www.nuget.org/packages/Aiursoft.Static/)
 
 Static is a simple static files HTTP server, as a global tool.
 
@@ -16,7 +16,7 @@ Requirements:
 Run the following command to install this tool:
 
 ```bash
-dotnet tool install --global Static
+dotnet tool install --global Aiursoft.Static
 ```
 
 ## Usage
