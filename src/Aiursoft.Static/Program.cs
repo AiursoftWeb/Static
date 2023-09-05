@@ -12,7 +12,7 @@ public static class Program
 
     public static RootCommand BuildCommand()
     {
-        var fileOption = new Option<string>(
+        var folderOption = new Option<string>(
             name: "--path",
             getDefaultValue: () => ".",
             description: "The folder to start the server.");
@@ -22,13 +22,13 @@ public static class Program
             description: "The port to listen for the server.");
 
         var rootCommand = new RootCommand("A simple static files HTTP server.");
-        rootCommand.AddOption(fileOption);
+        rootCommand.AddOption(folderOption);
         rootCommand.AddOption(portOption);
         rootCommand.SetHandler(async (path, port) =>
         {
             var host = BuildApp(path, port);
             await host.RunAsync();
-        }, fileOption, portOption);
+        }, folderOption, portOption);
         return rootCommand;
     }
 
