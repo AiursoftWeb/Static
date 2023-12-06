@@ -1,7 +1,6 @@
 using System.CommandLine;
 using System.CommandLine.Invocation;
 using Aiursoft.CommandFramework.Framework;
-using Aiursoft.CommandFramework.Models;
 
 public class StaticHandler : ExecutableCommandHandlerBuilder
 {
@@ -28,7 +27,8 @@ public class StaticHandler : ExecutableCommandHandlerBuilder
         var contentRoot = Path.GetFullPath(path);
         var builder = WebApplication.CreateBuilder(new WebApplicationOptions
         {
-            WebRootPath = contentRoot
+            WebRootPath = contentRoot,
+            ContentRootPath = contentRoot
         });
         builder.Logging.AddSimpleConsole(options =>
         {
