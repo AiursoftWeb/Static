@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <Version>7.0.1</Version>
+    <Version>7.0.2</Version>
     <TargetFramework>net7.0</TargetFramework>
     <AssemblyName>static</AssemblyName>
     <RootNamespace>Aiursoft.Static</RootNamespace>
@@ -25,6 +25,7 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="Aiursoft.CommandFramework" Version="7.0.14" />
     <PackageReference Include="System.CommandLine" Version="2.0.0-beta4.22272.1" />
     <None Include="../../README.md" Pack="true" PackagePath="." />
   </ItemGroup>
