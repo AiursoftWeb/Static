@@ -1,18 +1,11 @@
-﻿using Aiursoft.CommandFramework;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Aiursoft.Static.Tests;
 
 [TestClass]
 public class IntegrationTests
 {
-    private readonly AiursoftCommandApp _program;
-
-    public IntegrationTests()
-    {
-        var command = new StaticHandler().BuildAsCommand();
-        _program = new AiursoftCommandApp(command);
-    }
+    private readonly StaticHandler _program = new();
 
     [TestMethod]
     public async Task InvokeHelp()
