@@ -6,7 +6,7 @@ namespace Aiursoft.Static.Tests;
 [TestClass]
 public class IntegrationTests
 {
-    private readonly SingleCommandApp _program = new SingleCommandApp(new StaticHandler());
+    private readonly SingleCommandApp<StaticHandler> _program = new();
 
     [TestMethod]
     public async Task InvokeHelp()

@@ -1,3 +1,3 @@
 using Aiursoft.CommandFramework;
 
-return await new SingleCommandApp(new StaticHandler()).RunAsync(args);
+return await new SingleCommandApp<StaticHandler>().RunAsync(args);
