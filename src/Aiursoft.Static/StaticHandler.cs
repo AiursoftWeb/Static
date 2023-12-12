@@ -4,11 +4,11 @@ using Aiursoft.CommandFramework.Framework;
 
 public class StaticHandler : ExecutableCommandHandlerBuilder
 {
-    public override string Name => "static";
+    protected override string Name => "static";
 
-    public override string Description => "Start a static file server.";
+    protected override string Description => "Start a static file server.";
     
-    public override Option[] GetCommandOptions() => new Option[]
+    protected override Option[] GetCommandOptions() => new Option[]
     {
         OptionsProvider.PortOption,
         OptionsProvider.FolderOption,
