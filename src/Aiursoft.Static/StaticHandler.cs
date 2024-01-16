@@ -2,6 +2,8 @@ using System.CommandLine;
 using System.CommandLine.Invocation;
 using Aiursoft.CommandFramework.Framework;
 
+namespace Aiursoft.Static;
+
 public class StaticHandler : ExecutableCommandHandlerBuilder
 {
     protected override string Name => "static";

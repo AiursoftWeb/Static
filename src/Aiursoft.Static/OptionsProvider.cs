@@ -1,5 +1,7 @@
 using System.CommandLine;
 
+namespace Aiursoft.Static;
+
 public static class OptionsProvider
 {
     public static readonly Option<int> PortOption = new(
