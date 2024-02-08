@@ -18,5 +18,13 @@ public static class OptionsProvider
         name: "--allow-directory-browsing",
         getDefaultValue: () => false,
         description: "Allow directory browsing.");
-
+    
+    public static readonly Option<string?> MirrorWebSiteOption = new (
+        name: "--mirror",
+        description: "The website to mirror.");
+    
+    public static readonly Option<bool> CachedMirroredFilesOption = new (
+        name: "--cache-mirror",
+        getDefaultValue: () => true,
+        description: "Cache the mirrored files.");
 }

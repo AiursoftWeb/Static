@@ -14,7 +14,9 @@ public class StaticHandler : ExecutableCommandHandlerBuilder
     {
         OptionsProvider.PortOption,
         OptionsProvider.FolderOption,
-        OptionsProvider.AllowDirectoryBrowsingOption
+        OptionsProvider.AllowDirectoryBrowsingOption,
+        OptionsProvider.MirrorWebSiteOption,
+        OptionsProvider.CachedMirroredFilesOption
     };
 
     protected override async Task Execute(InvocationContext context)
@@ -22,11 +24,14 @@ public class StaticHandler : ExecutableCommandHandlerBuilder
         var path = context.ParseResult.GetValueForOption(OptionsProvider.FolderOption)!;
         var port = context.ParseResult.GetValueForOption(OptionsProvider.PortOption);
         var allowDirectoryBrowsing = context.ParseResult.GetValueForOption(OptionsProvider.AllowDirectoryBrowsingOption);
-        var app = BuildApp(path, port, allowDirectoryBrowsing);
+        var autoMirror = context.ParseResult.GetValueForOption(OptionsProvider.MirrorWebSiteOption);
+        var cacheMirror = context.ParseResult.GetValueForOption(OptionsProvider.CachedMirroredFilesOption);
+        
+        var app = BuildApp(path, port, allowDirectoryBrowsing, autoMirror, cacheMirror);
         await app.RunAsync();
     }
 
-    private static WebApplication BuildApp(string path, int port, bool allowDirectoryBrowsing)
+    private static WebApplication BuildApp(string path, int port, bool allowDirectoryBrowsing, string? autoMirror, bool cacheMirror)
     {
         var contentRoot = Path.GetFullPath(path);
         var builder = WebApplication.CreateBuilder(new WebApplicationOptions
@@ -53,6 +58,52 @@ public class StaticHandler : ExecutableCommandHandlerBuilder
         {
             DefaultFileNames = new List<string> { "index.html", "index.htm" }
         });
+        if (autoMirror is not null)
+        {
+            host.Use(async (context, next) =>
+            {
+                await next();
+                if (context.Response.StatusCode == 404)
+                {
+                    var logger = context.RequestServices.GetRequiredService<ILogger<WebApplication>>();
+                    logger.LogWarning($"404: {context.Request.Path}, but enabled auto mirror. Will try to mirror the file.");
+                    
+                    var requestPath = context.Request.Path.Value;
+                    var mirrorPath = autoMirror + requestPath;
+                    var client = new HttpClient();
+                    var userAgent = context.Request.Headers["User-Agent"].FirstOrDefault();
+                    if (userAgent is not null)
+                    {
+                        client.DefaultRequestHeaders.Add("User-Agent", userAgent);
+                    }
+                    var mirrorResponse = await client.GetAsync(mirrorPath);
+                    if (mirrorResponse.IsSuccessStatusCode)
+                    {
+                        var contentType = mirrorResponse.Content.Headers.ContentType?.MediaType;
+                        var content = await mirrorResponse.Content.ReadAsByteArrayAsync();
+                        context.Response.StatusCode = 200;
+                        context.Response.ContentType = contentType;
+                        await context.Response.Body.WriteAsync(content);
+
+                        if (cacheMirror)
+                        {
+                            var requestFilePath = requestPath!;
+                            if (requestFilePath.EndsWith('/'))
+                            {
+                                requestFilePath += "index.html";
+                            }
+                            var filePath = Path.Combine(contentRoot, requestFilePath.TrimStart('/'));
+
+                            
+                            var file = new FileInfo(filePath);
+                            file.Directory?.Create();
+                            await File.WriteAllBytesAsync(file.FullName, content);
+                        }
+                    }
+                }
+            });
+        }
+        
         host.UseStaticFiles(new StaticFileOptions
         {
             ServeUnknownFileTypes = true
