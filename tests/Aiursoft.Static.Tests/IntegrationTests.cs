@@ -1,4 +1,5 @@
 ﻿using Aiursoft.CommandFramework;
+using Aiursoft.Static.Handlers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Aiursoft.Static.Tests;

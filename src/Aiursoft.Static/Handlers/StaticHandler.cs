@@ -1,8 +1,10 @@
 using System.CommandLine;
 using System.CommandLine.Invocation;
 using Aiursoft.CommandFramework.Framework;
+using Aiursoft.Static.Middlewares;
+using Aiursoft.Static.Models.Configuration;
 
-namespace Aiursoft.Static;
+namespace Aiursoft.Static.Handlers;
 
 public class StaticHandler : ExecutableCommandHandlerBuilder
 {
@@ -48,6 +50,12 @@ public class StaticHandler : ExecutableCommandHandlerBuilder
         });
         builder.Logging.SetMinimumLevel(LogLevel.Information);
         builder.WebHost.ConfigureKestrel(options => options.ListenAnyIP(port));
+        builder.Services.Configure<MirrorConfiguration>(options =>
+        {
+            options.MirrorWebSite = autoMirror;
+            options.CachedMirroredFiles = cacheMirror;
+        });
+        builder.Services.AddHttpClient();
         var host = builder.Build();
         if (allowDirectoryBrowsing)
         {
@@ -60,48 +68,8 @@ public class StaticHandler : ExecutableCommandHandlerBuilder
         });
         if (autoMirror is not null)
         {
-            host.Use(async (context, next) =>
-            {
-                await next();
-                if (context.Response.StatusCode == 404 && context.Request.Method == "GET")
-                {
-                    var logger = context.RequestServices.GetRequiredService<ILogger<WebApplication>>();
-                    logger.LogWarning($"404: {context.Request.Path}, but enabled auto mirror. Will try to mirror the file.");
-                    
-                    var requestPath = context.Request.Path.Value;
-                    var mirrorPath = autoMirror + requestPath;
-                    var client = new HttpClient();
-                    var userAgent = context.Request.Headers["User-Agent"].FirstOrDefault();
-                    if (userAgent is not null)
-                    {
-                        client.DefaultRequestHeaders.Add("User-Agent", userAgent);
-                    }
-                    var mirrorResponse = await client.GetAsync(mirrorPath);
-                    if (mirrorResponse.IsSuccessStatusCode)
-                    {
-                        var contentType = mirrorResponse.Content.Headers.ContentType?.MediaType;
-                        var content = await mirrorResponse.Content.ReadAsByteArrayAsync();
-                        context.Response.StatusCode = 200;
-                        context.Response.ContentType = contentType;
-                        await context.Response.Body.WriteAsync(content);
+            host.UseMiddleware<MirrorMiddleware>();
 
-                        if (cacheMirror)
-                        {
-                            var requestFilePath = requestPath!.Split('?')[0];
-                            if (requestFilePath.EndsWith('/'))
-                            {
-                                requestFilePath += "index.html";
-                            }
-                            var filePath = Path.Combine(contentRoot, requestFilePath.TrimStart('/'));
-
-                            
-                            var file = new FileInfo(filePath);
-                            file.Directory?.Create();
-                            await File.WriteAllBytesAsync(file.FullName, content);
-                        }
-                    }
-                }
-            });
         }
         
         host.UseStaticFiles(new StaticFileOptions
