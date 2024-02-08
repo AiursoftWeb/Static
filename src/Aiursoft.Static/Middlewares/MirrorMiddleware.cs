@@ -33,6 +33,7 @@ public class MirrorMiddleware
             var mirrorResponse = await _client.GetAsync(mirrorPath);
             if (mirrorResponse.IsSuccessStatusCode)
             {
+                _logger.LogTrace($"File: {mirrorPath} can be mirrored.");
                 var contentType = mirrorResponse.Content.Headers.ContentType?.MediaType;
                 var content = await mirrorResponse.Content.ReadAsByteArrayAsync();
                 context.Response.StatusCode = 200;
@@ -42,6 +43,7 @@ public class MirrorMiddleware
                 
                 if (_options.CachedMirroredFiles)
                 {
+                    _logger.LogTrace($"The mirrored file: {mirrorPath} can be cached.");
                     var requestFilePath = requestPath!.Split('?')[0];
                     var contentRoot = context.RequestServices.GetRequiredService<IWebHostEnvironment>().ContentRootPath;
                     
@@ -54,6 +56,7 @@ public class MirrorMiddleware
                     var file = new FileInfo(filePath);
                     file.Directory?.Create();
                     await File.WriteAllBytesAsync(file.FullName, content);
+                    _logger.LogInformation($"Cached file done successfully: {filePath}");
                 }
             }
         }
