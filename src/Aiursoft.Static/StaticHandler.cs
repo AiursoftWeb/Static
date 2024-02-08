@@ -14,17 +14,19 @@ public class StaticHandler : ExecutableCommandHandlerBuilder
     {
         OptionsProvider.PortOption,
         OptionsProvider.FolderOption,
+        OptionsProvider.AllowDirectoryBrowsingOption
     };
 
     protected override async Task Execute(InvocationContext context)
     {
         var path = context.ParseResult.GetValueForOption(OptionsProvider.FolderOption)!;
         var port = context.ParseResult.GetValueForOption(OptionsProvider.PortOption);
-        var app = BuildApp(path, port);
+        var allowDirectoryBrowsing = context.ParseResult.GetValueForOption(OptionsProvider.AllowDirectoryBrowsingOption);
+        var app = BuildApp(path, port, allowDirectoryBrowsing);
         await app.RunAsync();
     }
 
-    private static WebApplication BuildApp(string path, int port)
+    private static WebApplication BuildApp(string path, int port, bool allowDirectoryBrowsing)
     {
         var contentRoot = Path.GetFullPath(path);
         var builder = WebApplication.CreateBuilder(new WebApplicationOptions
@@ -42,6 +44,11 @@ public class StaticHandler : ExecutableCommandHandlerBuilder
         builder.Logging.SetMinimumLevel(LogLevel.Information);
         builder.WebHost.ConfigureKestrel(options => options.ListenAnyIP(port));
         var host = builder.Build();
+        if (allowDirectoryBrowsing)
+        {
+            host.UseDirectoryBrowser();
+        }
+        
         host.UseDefaultFiles(new DefaultFilesOptions
         {
             DefaultFileNames = new List<string> { "index.html", "index.htm" }

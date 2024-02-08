@@ -13,5 +13,10 @@ public static class OptionsProvider
         name: "--path",
         getDefaultValue: () => ".",
         description: "The folder to start the server.");
+    
+    public static readonly Option<bool> AllowDirectoryBrowsingOption = new (
+        name: "--allow-directory-browsing",
+        getDefaultValue: () => false,
+        description: "Allow directory browsing.");
 
 }
