@@ -63,7 +63,7 @@ public class StaticHandler : ExecutableCommandHandlerBuilder
             host.Use(async (context, next) =>
             {
                 await next();
-                if (context.Response.StatusCode == 404)
+                if (context.Response.StatusCode == 404 && context.Request.Method == "GET")
                 {
                     var logger = context.RequestServices.GetRequiredService<ILogger<WebApplication>>();
                     logger.LogWarning($"404: {context.Request.Path}, but enabled auto mirror. Will try to mirror the file.");
@@ -87,7 +87,7 @@ public class StaticHandler : ExecutableCommandHandlerBuilder
 
                         if (cacheMirror)
                         {
-                            var requestFilePath = requestPath!;
+                            var requestFilePath = requestPath!.Split('?')[0];
                             if (requestFilePath.EndsWith('/'))
                             {
                                 requestFilePath += "index.html";
