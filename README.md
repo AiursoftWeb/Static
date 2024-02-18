@@ -36,10 +36,9 @@ Options:
   -p, --port <port>           The port to listen for the server. [default: 8080]
   --path <path>               The folder to start the server. [default: .]
   --allow-directory-browsing  Allow directory browsing the server files under the path. This options if conflict with --mirror. [default: False]
-  --mirror <mirror>           The website to mirror. Automatically proxy the file if the file is not found in the server. This option if conflict with --allow-directory-browsing. []
-  --cache-mirror              Cache the mirrored files. This will save the mirrored files to the server's disk. [default: False]
+  --mirror <mirror>           The website to mirror. Automatically proxy the file if the file is not found in the server. This option if conflict with --allow-directory-browsing.
+  --cache-mirror              Cache the mirrored files. This will save the mirrored files to the servers disk. [default: True]
   --enable-webdav             Enable WebDAV for the server. This is a read-only WebDAV server. [default: False]
-  --enable-webdav-write       Enable write access for the WebDAV server. This will allow the client to write files to the server. However, this requires the server process to run with write permission. [default: False]
   --version                   Show version information
   -?, -h, --help              Show help and usage information
 
