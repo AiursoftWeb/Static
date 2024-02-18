@@ -1,8 +1,11 @@
 using System.CommandLine;
 using System.CommandLine.Invocation;
+using System.Text.Encodings.Web;
 using Aiursoft.CommandFramework.Framework;
+using Aiursoft.Static.Extensions;
 using Aiursoft.Static.Middlewares;
 using Aiursoft.Static.Models.Configuration;
+using Microsoft.Extensions.FileProviders;
 
 namespace Aiursoft.Static.Handlers;
 
@@ -28,6 +31,11 @@ public class StaticHandler : ExecutableCommandHandlerBuilder
         var allowDirectoryBrowsing = context.ParseResult.GetValueForOption(OptionsProvider.AllowDirectoryBrowsingOption);
         var autoMirror = context.ParseResult.GetValueForOption(OptionsProvider.MirrorWebSiteOption);
         var cacheMirror = context.ParseResult.GetValueForOption(OptionsProvider.CachedMirroredFilesOption);
+        
+        if (autoMirror is not null && allowDirectoryBrowsing)
+        {
+            throw new InvalidOperationException("You cannot enable directory browsing when you are mirroring a website. This is because the directory browsing will be blocked by the mirror middleware.");
+        }
         
         var app = BuildApp(path, port, allowDirectoryBrowsing, autoMirror, cacheMirror);
         await app.RunAsync();
@@ -59,19 +67,27 @@ public class StaticHandler : ExecutableCommandHandlerBuilder
         var host = builder.Build();
         if (allowDirectoryBrowsing)
         {
-            host.UseDirectoryBrowser();
+            host.UseDirectoryBrowser(new DirectoryBrowserOptions
+            {
+                FileProvider = new PhysicalFileProvider(contentRoot),
+                Formatter = new SortedHtmlDirectoryFormatter(HtmlEncoder.Default),
+            });
         }
         
-        host.UseDefaultFiles(new DefaultFilesOptions
-        {
-            DefaultFileNames = new List<string> { "index.html", "index.htm" }
-        });
         if (autoMirror is not null)
         {
             host.UseMiddleware<MirrorMiddleware>();
-
+        }
+        else
+        {
+            host.UseDefaultFiles(new DefaultFilesOptions
+            {
+                DefaultFileNames = new List<string> { "index.html", "index.htm" }
+            });
         }
         
+        // No matter if we are mirroring or not, we should always serve static files.
+        // This is because the mirror middleware will only mirror the file if it's a 404.
         host.UseStaticFiles(new StaticFileOptions
         {
             ServeUnknownFileTypes = true
