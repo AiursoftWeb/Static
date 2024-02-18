@@ -41,6 +41,59 @@ Options:
 It will start an HTTP server on http://localhost:8080.
 ```
 
+## Install for all users
+
+You can install this tool for all users by running the following command:
+
+```bash
+sudo apt install -y dotnet7
+sudo dotnet tool install Aiursoft.Static --tool-path /opt/static || sudo dotnet tool update Aiursoft.Static --tool-path /opt/static
+sudo chmod +x /opt/static/static
+```
+
+Then you can run the tool by `/opt/static/static`.
+
+## Install for systemd
+
+You can make it a systemd service by creating a file `/etc/systemd/system/static.service` with the following content:
+
+```ini
+[Unit]
+Description=Serves static files for '/mnt/data' on port 48466
+After=network.target
+Wants=network.target
+
+# Before starting, run:
+# find /mnt/data -type d -print0 | sudo xargs -0 chmod 0755
+# find /mnt/data -type f -print0 | sudo xargs -0 chmod 0644
+# So www-data user can read the files
+# Also owner user can write to the files
+[Service]
+User=www-data
+Type=simple
+Restart=on-failure
+RestartSec=5s
+ExecStart=/opt/static/static --path /mnt/data -p 48466 --allow-directory-browsing
+WorkingDirectory=/mnt/data
+LimitNOFILE=1048576
+KillSignal=SIGINT
+Environment="ASPNETCORE_ENVIRONMENT=Production"
+Environment="DOTNET_PRINT_TELEMETRY_MESSAGE=false"
+Environment="DOTNET_CLI_TELEMETRY_OPTOUT=1"
+Environment="ASPNETCORE_FORWARDEDHEADERS_ENABLED=true"
+
+[Install]
+WantedBy=multi-user.target
+```
+
+Then you can start the service by running:
+
+```bash
+sudo systemctl enable static
+sudo systemctl start static
+sudo systemctl status static
+```
+
 ## How to contribute
 
 There are many ways to contribute to the project: logging bugs, submitting pull requests, reporting issues, and creating suggestions.

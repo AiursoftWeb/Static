@@ -65,6 +65,7 @@ public class StaticHandler : ExecutableCommandHandlerBuilder
         });
         builder.Services.AddHttpClient();
         var host = builder.Build();
+        host.UseForwardedHeaders();
         if (allowDirectoryBrowsing)
         {
             host.UseDirectoryBrowser(new DirectoryBrowserOptions
