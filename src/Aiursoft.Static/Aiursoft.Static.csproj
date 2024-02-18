@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <Version>7.0.16</Version>
+    <Version>7.0.17</Version>
     <TargetFramework>net7.0</TargetFramework>
     <AssemblyName>static</AssemblyName>
     <RootNamespace>Aiursoft.Static</RootNamespace>
@@ -27,5 +27,8 @@
   <ItemGroup>
     <PackageReference Include="Aiursoft.CommandFramework" Version="7.0.25" />
     <None Include="../../README.md" Pack="true" PackagePath="." />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Aiursoft.WebDav\Aiursoft.WebDav.csproj" />
   </ItemGroup>
 </Project>

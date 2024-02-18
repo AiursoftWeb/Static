@@ -5,8 +5,8 @@ using Aiursoft.CommandFramework.Framework;
 using Aiursoft.Static.Extensions;
 using Aiursoft.Static.Middlewares;
 using Aiursoft.Static.Models.Configuration;
+using Aiursoft.WebDav;
 using Microsoft.Extensions.FileProviders;
-// ReSharper disable StringLiteralTypo
 
 namespace Aiursoft.Static.Handlers;
 
@@ -34,13 +34,18 @@ public class StaticHandler : ExecutableCommandHandlerBuilder
         var autoMirror = context.ParseResult.GetValueForOption(OptionsProvider.MirrorWebSiteOption);
         var cacheMirror = context.ParseResult.GetValueForOption(OptionsProvider.CachedMirroredFilesOption);
         var enableWebDav = context.ParseResult.GetValueForOption(OptionsProvider.EnableWebDavOption);
+        var webDavCanWrite = context.ParseResult.GetValueForOption(OptionsProvider.WebDavCanWriteOption);
         
         if (autoMirror is not null && allowDirectoryBrowsing)
         {
             throw new InvalidOperationException("You cannot enable directory browsing when you are mirroring a website. This is because the directory browsing will be blocked by the mirror middleware.");
         }
+        if (!enableWebDav && webDavCanWrite)
+        {
+            throw new InvalidOperationException("You cannot enable WebDAV write access when WebDAV is not enabled.");
+        }
         
-        var app = BuildApp(path, port, allowDirectoryBrowsing, autoMirror, cacheMirror, enableWebDav);
+        var app = BuildApp(path, port, allowDirectoryBrowsing, autoMirror, cacheMirror, enableWebDav, webDavCanWrite);
         await app.RunAsync();
     }
 
@@ -53,6 +58,7 @@ public class StaticHandler : ExecutableCommandHandlerBuilder
     /// <param name="autoMirror">The URL of the website to mirror (optional).</param>
     /// <param name="cacheMirror">Whether to cache the mirrored files or not.</param>
     /// <param name="enableWebDav">Whether to enable WebDAV or not.</param>
+    /// <param name="webDavCanWrite">Whether to allow write access for the WebDAV server or not.</param>
     /// <returns>A built and configured instance of WebApplication.</returns>
     private static WebApplication BuildApp(
         string path, 
@@ -60,7 +66,8 @@ public class StaticHandler : ExecutableCommandHandlerBuilder
         bool allowDirectoryBrowsing, 
         string? autoMirror, 
         bool cacheMirror,
-        bool enableWebDav)
+        bool enableWebDav,
+        bool webDavCanWrite)
     {
         var contentRoot = Path.GetFullPath(path);
         var builder = WebApplication.CreateBuilder(new WebApplicationOptions
@@ -82,6 +89,15 @@ public class StaticHandler : ExecutableCommandHandlerBuilder
             options.MirrorWebSite = autoMirror;
             options.CachedMirroredFiles = cacheMirror;
         });
+
+        if (enableWebDav)
+        {
+            var readonlyWebDav = !webDavCanWrite;
+            builder.Services
+                .AddWebDav(x => x.IsReadOnly = readonlyWebDav)
+                .AddFilesystem(options => options.SourcePath = contentRoot);
+        }
+        
         builder.Services.AddHttpClient();
         var host = builder.Build();
         host.UseForwardedHeaders();
@@ -108,15 +124,16 @@ public class StaticHandler : ExecutableCommandHandlerBuilder
         
         if (enableWebDav)
         {
-            host.UseMiddleware<WebDavMiddleware>(contentRoot);
+            var logger = host.Services.GetRequiredService<ILogger<StaticHandler>>();
+            logger.LogInformation("WebDAV is enabled. Please open your WebDAV client and connect to the server using the following URL: http://localhost:{port}/webdav", port);
+            host.UseWebDavSharp(new PathString("/webdav"));
         }
         
-        // No matter if we are mirroring or not, we should always serve static files.
-        // This is because the mirror middleware will only mirror the file if it's a 404.
         host.UseStaticFiles(new StaticFileOptions
         {
             ServeUnknownFileTypes = true
         });
+        
         return host;
     }
 }

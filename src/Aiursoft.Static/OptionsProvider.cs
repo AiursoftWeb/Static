@@ -32,4 +32,9 @@ public static class OptionsProvider
         name: "--enable-webdav",
         getDefaultValue: () => false,
         description: "Enable WebDAV for the server. This is a read-only WebDAV server.");
+    
+    public static readonly Option<bool> WebDavCanWriteOption = new (
+        name: "--enable-webdav-write",
+        getDefaultValue: () => false,
+        description: "Enable write access for the WebDAV server. This will allow the client to write files to the server. However, this requires the server process to run with write permission.");
 }
