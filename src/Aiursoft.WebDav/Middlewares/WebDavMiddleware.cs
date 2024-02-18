@@ -12,36 +12,24 @@ namespace Aiursoft.WebDav.Middlewares
     /// <summary>
     /// WebDavMiddleware
     /// </summary>
-    class WebDavMiddleware
+    public class WebDavMiddleware
     {
         // ReSharper disable once NotAccessedField.Local
         private readonly RequestDelegate _next;
-
+        private readonly WebDavOptions _options;
+        private readonly ILogger<WebDavMiddleware> _logger;
+        private readonly IWebDavFilesystem _filesystem;
+        
         public WebDavMiddleware(RequestDelegate next,
             IOptions<WebDavOptions> options,
             IWebDavFilesystem filesystem,
             ILogger<WebDavMiddleware> logger)
         {
-            Options = options.Value;
+            _options = options.Value;
             _next = next;
-            Filesystem = filesystem;
-            Logger = logger;
+            _filesystem = filesystem;
+            _logger = logger;
         }
-
-        /// <summary>
-        /// Options
-        /// </summary>
-        public WebDavOptions Options { get; }
-
-        /// <summary>
-        /// Logger
-        /// </summary>
-        public ILogger<WebDavMiddleware> Logger { get; }
-
-        /// <summary>
-        /// Filesystem
-        /// </summary>
-        private IWebDavFilesystem Filesystem { get; }
 
         public async Task InvokeAsync(HttpContext context)
         {
@@ -58,7 +46,7 @@ namespace Aiursoft.WebDav.Middlewares
 
             context.SetWebDavContext(webDavContext);
 
-            Logger.LogTrace($"HTTP Request: {context.Request.Method} {context.Request.Path}");
+            _logger.LogTrace($"HTTP Request: {context.Request.Method} {context.Request.Path}");
 
             var action =  context.Request.Method switch
             {
@@ -81,7 +69,7 @@ namespace Aiursoft.WebDav.Middlewares
 
         private Task ProcessOptionsAsync(HttpContext context)
         {
-            if (Options.IsReadOnly)
+            if (_options.IsReadOnly)
             {
                 context.Response.Headers.Add("Allow", "OPTIONS, TRACE, GET, HEAD, PROPFIND");
             }
@@ -97,7 +85,7 @@ namespace Aiursoft.WebDav.Middlewares
 
         private async Task ProcessGetAsync(HttpContext context)
         {
-            using (var fs = await Filesystem.OpenFileStreamAsync(context.GetWebDavContext()))
+            using (var fs = await _filesystem.OpenFileStreamAsync(context.GetWebDavContext()))
             {
                 await fs.CopyToAsync(context.Response.Body);
             }
@@ -105,22 +93,22 @@ namespace Aiursoft.WebDav.Middlewares
 
         private async Task ProcessMKCOLAsync(HttpContext context)
         {
-            if (Options.IsReadOnly)
+            if (_options.IsReadOnly)
             {
                 throw new InvalidOperationException("The server is read-only. But the request is trying to create a collection.");
             }
 
-            await Filesystem.CreateCollectionAsync(context.GetWebDavContext());
+            await _filesystem.CreateCollectionAsync(context.GetWebDavContext());
         }
 
         private Task ProcessPutAsync(HttpContext context)
         {
-            if (Options.IsReadOnly)
+            if (_options.IsReadOnly)
             {
                 throw new InvalidOperationException("The server is read-only. But the request is trying to modify the file.");
             }
 
-            return Filesystem.WriteFileAsync(context.Request.Body, context.GetWebDavContext());
+            return _filesystem.WriteFileAsync(context.Request.Body, context.GetWebDavContext());
         }
 
         private Task ProcessHeadAsync()
@@ -130,7 +118,7 @@ namespace Aiursoft.WebDav.Middlewares
 
         private async Task ProcessPropPatchAsync(HttpContext context)
         {
-            if (Options.IsReadOnly)
+            if (_options.IsReadOnly)
             {
                 throw new InvalidOperationException("The server is read-only. But the request is trying to modify the file.");
             }
@@ -139,7 +127,7 @@ namespace Aiursoft.WebDav.Middlewares
 
         private async Task ProcessPropfindAsync(HttpContext context)
         {
-            var result = await Filesystem.FindPropertiesAsync(context.GetWebDavContext());
+            var result = await _filesystem.FindPropertiesAsync(context.GetWebDavContext());
 
             context.Response.StatusCode = result.StatusCode;
 
@@ -155,7 +143,7 @@ namespace Aiursoft.WebDav.Middlewares
 
         private async Task ProcessLockAsync(HttpContext context)
         {
-            if (Options.IsReadOnly)
+            if (_options.IsReadOnly)
             {
                 throw new InvalidOperationException("The server is read-only. But the request is trying to modify the file.");
             }
@@ -167,7 +155,7 @@ namespace Aiursoft.WebDav.Middlewares
 
         private Task ProcessUnlockAsync()
         {
-            if (Options.IsReadOnly)
+            if (_options.IsReadOnly)
             {
                 throw new InvalidOperationException("The server is read-only. But the request is trying to modify the file.");
             }
@@ -177,17 +165,17 @@ namespace Aiursoft.WebDav.Middlewares
 
         private Task ProcessDeleteAsync(HttpContext context)
         {
-            if (Options.IsReadOnly)
+            if (_options.IsReadOnly)
             {
                 throw new InvalidOperationException("The server is read-only. But the request is trying to delete the file.");
             }
 
-            return Filesystem.DeleteAsync(context.GetWebDavContext());
+            return _filesystem.DeleteAsync(context.GetWebDavContext());
         }
 
         private async Task ProcessMoveAsync(HttpContext context)
         {
-            if (Options.IsReadOnly)
+            if (_options.IsReadOnly)
             {
                 throw new InvalidOperationException("The server is read-only. But the request is trying to move the file.");
             }
@@ -200,7 +188,7 @@ namespace Aiursoft.WebDav.Middlewares
 
             var newUri = new Uri(destinations.First());
 
-            await Filesystem.MoveToAsync(context.GetWebDavContext(), newUri.PathAndQuery.UrlDecode());
+            await _filesystem.MoveToAsync(context.GetWebDavContext(), newUri.PathAndQuery.UrlDecode());
 
             context.Response.StatusCode = StatusCodes.Status201Created;
         }

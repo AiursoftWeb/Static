@@ -8,17 +8,14 @@ namespace Aiursoft.WebDav.Filesystems.LocalFilesystems
     /// <summary>
     /// LocalFilesystem
     /// </summary>
-    class LocalFilesystem : IWebDavFilesystem
+    public class LocalFilesystem : IWebDavFilesystem
     {
+        private readonly LocalFilesystemOptions _options;
+
         public LocalFilesystem(IOptions<LocalFilesystemOptions> options)
         {
-            Options = options.Value;
+            _options = options.Value;
         }
-
-        /// <summary>
-        /// Options
-        /// </summary>
-        public LocalFilesystemOptions Options { get; }
 
         private string GetLocalPath(string path)
         {
@@ -27,14 +24,14 @@ namespace Aiursoft.WebDav.Filesystems.LocalFilesystems
                 path = path[1..];
             }
 
-            var fullpath = Path.Combine(Options.SourcePath, path);
+            var fullPath = Path.Combine(_options.SourcePath, path);
 
-            if (fullpath.StartsWith(Options.SourcePath) == false)
+            if (fullPath.StartsWith(_options.SourcePath) == false)
             {
                 throw new InvalidOperationException("Invalid path for local filesystem! Path: " + path);
             }
 
-            return fullpath;
+            return fullPath;
         }
 
         public Task<Stream> OpenFileStreamAsync(WebDavContext context)
@@ -47,13 +44,9 @@ namespace Aiursoft.WebDav.Filesystems.LocalFilesystems
         {
             var file = new FileInfo(GetLocalPath(context.Path));
 
-            using (Stream fs = file.OpenWrite())
-            {
-                //clear content
-                fs.SetLength(0);
-
-                await stream.CopyToAsync(fs);
-            }
+            await using Stream fs = file.OpenWrite();
+            fs.SetLength(0);
+            await stream.CopyToAsync(fs);
         }
 
         public Task<IWebDavResult> FindPropertiesAsync(WebDavContext context)
