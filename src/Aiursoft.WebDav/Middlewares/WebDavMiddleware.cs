@@ -186,10 +186,13 @@ namespace Aiursoft.WebDav.Middlewares
                 throw new InvalidOperationException("The destination header is missing.");
             }
 
-            var newUri = new Uri(destinations.First());
-
-            await _filesystem.MoveToAsync(context.GetWebDavContext(), newUri.PathAndQuery.UrlDecode());
-
+            var destination = destinations.First();
+            // destination may be `http://localhost:12345/webdav/new-folder/dest.txt`
+            // But what we actually need is `/new-folder/dest.txt`
+            var newUri = new Uri(destination);
+            var path = newUri.PathAndQuery.UrlDecode(); // /webdav/new-folder/dest.txt
+            var newPath = path.Substring(path.IndexOf('/', 1)); // /new-folder/dest.txt
+            await _filesystem.MoveToAsync(context.GetWebDavContext(), newPath);
             context.Response.StatusCode = StatusCodes.Status201Created;
         }
 

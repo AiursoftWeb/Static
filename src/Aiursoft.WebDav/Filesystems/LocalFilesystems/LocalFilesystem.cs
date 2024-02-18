@@ -31,7 +31,7 @@ namespace Aiursoft.WebDav.Filesystems.LocalFilesystems
                 throw new InvalidOperationException("Invalid path for local filesystem! Path: " + path);
             }
 
-            return fullPath;
+            return fullPath.Replace('/', Path.DirectorySeparatorChar);
         }
 
         public Task<Stream> OpenFileStreamAsync(WebDavContext context)
@@ -107,7 +107,18 @@ namespace Aiursoft.WebDav.Filesystems.LocalFilesystems
             var localPathFrom = GetLocalPath(context.Path);
             var localPathTo = GetLocalPath(path);
             
-            Directory.Move(localPathFrom, localPathTo);
+            // If the destination is a directory, move the file into the directory.
+            var isDirectory = Directory.Exists(localPathTo);
+            if (isDirectory)
+            {
+                Directory.Move(localPathFrom, localPathTo);
+            }
+            else
+            {
+                File.Move(localPathFrom, localPathTo);
+            }
+            // If the destination is a file, replace the file.
+            
 
             return Task.FromResult(true);
         }

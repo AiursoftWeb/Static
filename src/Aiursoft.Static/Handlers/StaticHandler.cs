@@ -23,7 +23,8 @@ public class StaticHandler : ExecutableCommandHandlerBuilder
         OptionsProvider.AllowDirectoryBrowsingOption,
         OptionsProvider.MirrorWebSiteOption,
         OptionsProvider.CachedMirroredFilesOption,
-        OptionsProvider.EnableWebDavOption
+        OptionsProvider.EnableWebDavOption,
+        OptionsProvider.WebDavCanWriteOption
     };
 
     protected override async Task Execute(InvocationContext context)
