@@ -152,19 +152,35 @@ public class IntegrationTests
         var responseString = await new StreamReader(response.Stream).ReadToEndAsync();
         Assert.AreEqual(newFileContent, responseString);
         
+        // Create a folder
+        await client.Mkcol("new-folder");
+        
         // Move a file
-        var moveResult = await client.Move("file.txt", "dest.txt");
+        var moveResult = await client.Move("file.txt", "new-folder/dest.txt");
         Assert.AreEqual((int)HttpStatusCode.Created, moveResult.StatusCode);
         
         // List folder content
-        var list = await client.Propfind("");
+        var list = await client.Propfind("new-folder");
         Assert.IsTrue(list.Resources.Any(f => f.Uri.ToString().EndsWith("dest.txt")));
         
-        // Delete a file
-        await client.Delete("dest.txt");
+        // Move a folder
+        var moveFolderResult = await client.Move("new-folder", "new-folder2");
         
         // List folder content
-        list = await client.Propfind("/");
+        list = await client.Propfind("new-folder2");
+        Assert.IsTrue(list.Resources.Any(f => f.Uri.ToString().EndsWith("dest.txt")));
+        
+        // Delete a folder
+        await client.Delete("new-folder2");
+        
+        // Put a file
+        await client.PutFile("file2.txt", new MemoryStream(Encoding.UTF8.GetBytes(newFileContent)));
+        
+        // Delete a file
+        await client.Delete("file2.txt");
+        
+        // List folder content
+        list = await client.Propfind("");
         Assert.IsFalse(list.Resources.Any(f => f.Uri.ToString().EndsWith("dest.txt")));
     }
 }

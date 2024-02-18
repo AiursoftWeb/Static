@@ -108,7 +108,7 @@ namespace Aiursoft.WebDav.Filesystems.LocalFilesystems
             var localPathTo = GetLocalPath(path);
             
             // If the destination is a directory, move the file into the directory.
-            var isDirectory = Directory.Exists(localPathTo);
+            var isDirectory = Directory.Exists(localPathFrom);
             if (isDirectory)
             {
                 Directory.Move(localPathFrom, localPathTo);
