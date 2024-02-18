@@ -40,7 +40,7 @@ namespace Aiursoft.WebDav.Filesystems.LocalFilesystems
         public Task<Stream> OpenFileStreamAsync(WebDavContext context)
         {
             var file = new FileInfo(GetLocalPath(context.Path));
-            return Task.FromResult(file.OpenRead() as Stream);
+            return Task.FromResult<Stream>(file.OpenRead());
         }
 
         public async Task WriteFileAsync(Stream stream, WebDavContext context)

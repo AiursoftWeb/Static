@@ -31,14 +31,20 @@ public class StaticHandler : ExecutableCommandHandlerBuilder
         var path = context.ParseResult.GetValueForOption(OptionsProvider.FolderOption)!;
         var port = context.ParseResult.GetValueForOption(OptionsProvider.PortOption);
         var allowDirectoryBrowsing = context.ParseResult.GetValueForOption(OptionsProvider.AllowDirectoryBrowsingOption);
+        
         var autoMirror = context.ParseResult.GetValueForOption(OptionsProvider.MirrorWebSiteOption);
         var cacheMirror = context.ParseResult.GetValueForOption(OptionsProvider.CachedMirroredFilesOption);
+        
         var enableWebDav = context.ParseResult.GetValueForOption(OptionsProvider.EnableWebDavOption);
         var webDavCanWrite = context.ParseResult.GetValueForOption(OptionsProvider.WebDavCanWriteOption);
         
         if (autoMirror is not null && allowDirectoryBrowsing)
         {
             throw new InvalidOperationException("You cannot enable directory browsing when you are mirroring a website. This is because the directory browsing will be blocked by the mirror middleware.");
+        }
+        if (autoMirror is null && cacheMirror)
+        {
+            throw new InvalidOperationException("You cannot cache mirrored files when you are not mirroring a website.");
         }
         if (!enableWebDav && webDavCanWrite)
         {
@@ -126,7 +132,7 @@ public class StaticHandler : ExecutableCommandHandlerBuilder
         {
             var logger = host.Services.GetRequiredService<ILogger<StaticHandler>>();
             logger.LogInformation("WebDAV is enabled. Please open your WebDAV client and connect to the server using the following URL: http://localhost:{port}/webdav", port);
-            host.UseWebDavSharp(new PathString("/webdav"));
+            host.UseWebDav(new PathString("/webdav"));
         }
         
         host.UseStaticFiles(new StaticFileOptions

@@ -1,4 +1,6 @@
-﻿using Aiursoft.CommandFramework;
+﻿using System.Net;
+using Aiursoft.CommandFramework;
+using Aiursoft.CSTools.Tools;
 using Aiursoft.Static.Handlers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -8,7 +10,15 @@ namespace Aiursoft.Static.Tests;
 public class IntegrationTests
 {
     private readonly SingleCommandApp<StaticHandler> _program = new();
+    private string _indexContentFile = null!;
 
+    [TestInitialize]
+    public async Task ResetContentFolder()
+    {
+        _indexContentFile = Path.Combine(AppContext.BaseDirectory, "Assets", "index.html");
+        await File.WriteAllTextAsync(_indexContentFile, "<h2>Hello world!</h2>");
+    }
+    
     [TestMethod]
     public async Task InvokeHelp()
     {
@@ -28,5 +38,78 @@ public class IntegrationTests
     {
         var result = await _program.TestRunAsync(new[] { "--wtf" });
         Assert.AreEqual(1, result.ProgramReturn);
+    }
+
+    private async Task<HttpResponseMessage> TestServer(string requestPath, params string[] options)
+    {
+        var availablePort = Network.GetAvailablePort();
+        var basicArgs = CreateTestRunArguments(AppContext.BaseDirectory, availablePort, options);
+        await Task.Factory.StartNew(() => _program.TestRunAsync(basicArgs));
+        await Task.Delay(1000);
+
+        var response = await new HttpClient().GetAsync($"http://localhost:{availablePort}{requestPath}");
+        return response;
+
+        string[] CreateTestRunArguments(string baseDirectory, int port, string[] extraOptions)
+        {
+            var args = new List<string>
+            {
+                "--path",
+                Path.Combine(baseDirectory, "Assets"),
+                "--port",
+                port.ToString()
+            };
+            args.AddRange(extraOptions);
+            return args.ToArray();
+        }
+    }
+
+    [TestMethod]
+    public async Task BasicServer()
+    {
+        var response = await TestServer("/");
+        var responseString = await response.Content.ReadAsStringAsync();
+        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        Assert.AreEqual("<h2>Hello world!</h2>", responseString);
+    }
+
+    [TestMethod]
+    public async Task TestDirectoryBrowsing()
+    {
+        var response = await TestServer("/", "--allow-directory-browsing");
+        var responseString = await response.Content.ReadAsStringAsync();
+        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        Assert.IsTrue(responseString.Contains("index.html"));
+    }
+    
+    [TestMethod]
+    public async Task TestMirrorWithoutCache()
+    {
+        var response = await TestServer("/", "--mirror", "https://www.aiursoft.cn");
+        var responseString = await response.Content.ReadAsStringAsync();
+        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        Assert.IsTrue(responseString.Contains("Aiursoft"));
+    }
+    
+    [TestMethod]
+    public async Task TestMirrorWithCache()
+    {
+        var response = await TestServer("/","--mirror", "https://www.aiursoft.cn", "--cache-mirror");
+        var responseString = await response.Content.ReadAsStringAsync();
+        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        Assert.IsTrue(responseString.Contains("Aiursoft"));
+        
+        var cacheContent = await File.ReadAllTextAsync(_indexContentFile);
+        Assert.IsTrue(cacheContent.Contains("Aiursoft"));
+    }
+    
+    [TestMethod]
+    public async Task TestWebDavReadonly()
+    {
+        var response = await TestServer("/webdav/index.html",
+            "--enable-webdav");
+        var responseString = await response.Content.ReadAsStringAsync();
+        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        Assert.IsTrue(responseString.Contains("Hello world!"));
     }
 }

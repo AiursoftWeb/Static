@@ -1,17 +1,24 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Library</OutputType>
+    <Version>7.0.0</Version>
     <TargetFramework>net6.0</TargetFramework>
     <AssemblyName>Aiursoft.WebDav</AssemblyName>
     <RootNamespace>Aiursoft.WebDav</RootNamespace>
     <IsTestProject>false</IsTestProject>
-    <IsPackable>false</IsPackable>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <IsPackable>true</IsPackable>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <Company>Aiursoft</Company>
+    <Product>WebDav</Product>
     <Description>WebDAV middleware for ASP.NET Core</Description>
+    <PackageId>Aiursoft.WebDav</PackageId>
+    <PackageTags>nuget package dotnet csproj webdav aspnet</PackageTags>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
+    <None Include="..\..\README.md" Pack="true" PackagePath="." />
   </ItemGroup>
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />

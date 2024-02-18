@@ -33,19 +33,19 @@ namespace Aiursoft.WebDav
             return builder;
         }
 
-        public static IApplicationBuilder UseWebDavSharp(this IApplicationBuilder builder, PathString basePath)
+        public static IApplicationBuilder UseWebDav(this IApplicationBuilder builder, PathString basePath)
         {
             builder.Map(basePath, b =>
             {
                 b.UseRouting();
-                b.UseEndpoints(endpoints => endpoints.MapWebDavSharp());
+                b.UseEndpoints(endpoints => endpoints.MapWebDav());
             });
 
             return builder;
         }
 
         // ReSharper disable once UnusedMethodReturnValue.Local
-        private static IEndpointConventionBuilder MapWebDavSharp(this IEndpointRouteBuilder endpoints)
+        private static IEndpointConventionBuilder MapWebDav(this IEndpointRouteBuilder endpoints)
         {
             var pipeline = endpoints.CreateApplicationBuilder()
                 .UseMiddleware<WebDavMiddleware>()

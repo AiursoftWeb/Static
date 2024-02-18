@@ -21,11 +21,12 @@ public static class OptionsProvider
     
     public static readonly Option<string?> MirrorWebSiteOption = new (
         name: "--mirror",
+        getDefaultValue: () => null,
         description: "The website to mirror. Automatically proxy the file if the file is not found in the server. This option if conflict with --allow-directory-browsing.");
     
     public static readonly Option<bool> CachedMirroredFilesOption = new (
         name: "--cache-mirror",
-        getDefaultValue: () => true,
+        getDefaultValue: () => false,
         description: "Cache the mirrored files. This will save the mirrored files to the server's disk.");
     
     public static readonly Option<bool> EnableWebDavOption = new (
