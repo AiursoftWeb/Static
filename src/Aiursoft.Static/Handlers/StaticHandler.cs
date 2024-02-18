@@ -6,6 +6,7 @@ using Aiursoft.Static.Extensions;
 using Aiursoft.Static.Middlewares;
 using Aiursoft.Static.Models.Configuration;
 using Microsoft.Extensions.FileProviders;
+// ReSharper disable StringLiteralTypo
 
 namespace Aiursoft.Static.Handlers;
 
@@ -21,7 +22,8 @@ public class StaticHandler : ExecutableCommandHandlerBuilder
         OptionsProvider.FolderOption,
         OptionsProvider.AllowDirectoryBrowsingOption,
         OptionsProvider.MirrorWebSiteOption,
-        OptionsProvider.CachedMirroredFilesOption
+        OptionsProvider.CachedMirroredFilesOption,
+        OptionsProvider.EnableWebDavOption
     };
 
     protected override async Task Execute(InvocationContext context)
@@ -31,17 +33,34 @@ public class StaticHandler : ExecutableCommandHandlerBuilder
         var allowDirectoryBrowsing = context.ParseResult.GetValueForOption(OptionsProvider.AllowDirectoryBrowsingOption);
         var autoMirror = context.ParseResult.GetValueForOption(OptionsProvider.MirrorWebSiteOption);
         var cacheMirror = context.ParseResult.GetValueForOption(OptionsProvider.CachedMirroredFilesOption);
+        var enableWebDav = context.ParseResult.GetValueForOption(OptionsProvider.EnableWebDavOption);
         
         if (autoMirror is not null && allowDirectoryBrowsing)
         {
             throw new InvalidOperationException("You cannot enable directory browsing when you are mirroring a website. This is because the directory browsing will be blocked by the mirror middleware.");
         }
         
-        var app = BuildApp(path, port, allowDirectoryBrowsing, autoMirror, cacheMirror);
+        var app = BuildApp(path, port, allowDirectoryBrowsing, autoMirror, cacheMirror, enableWebDav);
         await app.RunAsync();
     }
 
-    private static WebApplication BuildApp(string path, int port, bool allowDirectoryBrowsing, string? autoMirror, bool cacheMirror)
+    /// <summary>
+    /// Builds and configures a web application.
+    /// </summary>
+    /// <param name="path">The physical path to the root directory of the web application.</param>
+    /// <param name="port">The port number on which the web application will be hosted.</param>
+    /// <param name="allowDirectoryBrowsing">Whether to allow directory browsing or not.</param>
+    /// <param name="autoMirror">The URL of the website to mirror (optional).</param>
+    /// <param name="cacheMirror">Whether to cache the mirrored files or not.</param>
+    /// <param name="enableWebDav">Whether to enable WebDAV or not.</param>
+    /// <returns>A built and configured instance of WebApplication.</returns>
+    private static WebApplication BuildApp(
+        string path, 
+        int port, 
+        bool allowDirectoryBrowsing, 
+        string? autoMirror, 
+        bool cacheMirror,
+        bool enableWebDav)
     {
         var contentRoot = Path.GetFullPath(path);
         var builder = WebApplication.CreateBuilder(new WebApplicationOptions
@@ -85,6 +104,11 @@ public class StaticHandler : ExecutableCommandHandlerBuilder
             {
                 DefaultFileNames = new List<string> { "index.html", "index.htm" }
             });
+        }
+        
+        if (enableWebDav)
+        {
+            host.UseMiddleware<WebDavMiddleware>(contentRoot);
         }
         
         // No matter if we are mirroring or not, we should always serve static files.

@@ -27,4 +27,9 @@ public static class OptionsProvider
         name: "--cache-mirror",
         getDefaultValue: () => true,
         description: "Cache the mirrored files. This will save the mirrored files to the server's disk.");
+    
+    public static readonly Option<bool> EnableWebDavOption = new (
+        name: "--enable-webdav",
+        getDefaultValue: () => false,
+        description: "Enable WebDAV for the server. This is a read-only WebDAV server.");
 }
