@@ -98,7 +98,9 @@ namespace Aiursoft.WebDav.Middlewares
                 throw new InvalidOperationException("The server is read-only. But the request is trying to create a collection.");
             }
 
-            await _filesystem.CreateCollectionAsync(context.GetWebDavContext());
+            var result = await _filesystem.CreateCollectionAsync(context.GetWebDavContext());
+            
+            context.Response.StatusCode = result.StatusCode;
         }
 
         private Task ProcessPutAsync(HttpContext context)
@@ -108,6 +110,7 @@ namespace Aiursoft.WebDav.Middlewares
                 throw new InvalidOperationException("The server is read-only. But the request is trying to modify the file.");
             }
 
+            context.Response.StatusCode = StatusCodes.Status201Created;
             return _filesystem.WriteFileAsync(context.Request.Body, context.GetWebDavContext());
         }
 
@@ -170,6 +173,7 @@ namespace Aiursoft.WebDav.Middlewares
                 throw new InvalidOperationException("The server is read-only. But the request is trying to delete the file.");
             }
 
+            context.Response.StatusCode = StatusCodes.Status204NoContent;
             return _filesystem.DeleteAsync(context.GetWebDavContext());
         }
 
