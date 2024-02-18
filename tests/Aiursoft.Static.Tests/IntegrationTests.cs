@@ -153,7 +153,8 @@ public class IntegrationTests
         Assert.AreEqual(newFileContent, responseString);
         
         // Create a folder
-        await client.Mkcol("new-folder");
+        var createFolderResult = await client.Mkcol("new-folder");
+        Assert.AreEqual((int)HttpStatusCode.Created, createFolderResult.StatusCode);
         
         // Move a file
         var moveResult = await client.Move("file.txt", "new-folder/dest.txt");
@@ -165,19 +166,23 @@ public class IntegrationTests
         
         // Move a folder
         var moveFolderResult = await client.Move("new-folder", "new-folder2");
+        Assert.AreEqual((int)HttpStatusCode.Created, moveFolderResult.StatusCode);
         
         // List folder content
         list = await client.Propfind("new-folder2");
         Assert.IsTrue(list.Resources.Any(f => f.Uri.ToString().EndsWith("dest.txt")));
         
         // Delete a folder
-        await client.Delete("new-folder2");
+        var deleteResult = await client.Delete("new-folder2");
+        Assert.AreEqual((int)HttpStatusCode.NoContent, deleteResult.StatusCode);
         
         // Put a file
-        await client.PutFile("file2.txt", new MemoryStream(Encoding.UTF8.GetBytes(newFileContent)));
+        var putFileResult = await client.PutFile("file2.txt", new MemoryStream(Encoding.UTF8.GetBytes(newFileContent)));
+        Assert.AreEqual((int)HttpStatusCode.Created, putFileResult.StatusCode);
         
         // Delete a file
-        await client.Delete("file2.txt");
+        var deleteFileResult = await client.Delete("file2.txt");
+        Assert.AreEqual((int)HttpStatusCode.NoContent, deleteFileResult.StatusCode);
         
         // List folder content
         list = await client.Propfind("");
