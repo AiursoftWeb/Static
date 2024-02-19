@@ -12,7 +12,7 @@ Static is a simple static files HTTP server, as a global tool.
 
 Requirements:
 
-1. [.NET 7 SDK](http://dot.net/)
+1. [.NET 8 SDK](http://dot.net/)
 
 Run the following command to install this tool:
 
