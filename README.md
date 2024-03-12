@@ -99,6 +99,51 @@ sudo systemctl start static
 sudo systemctl status static
 ```
 
+## Run in Docker
+
+First, install Docker [here](https://docs.docker.com/get-docker/).
+
+Then run the following commands in a Linux shell:
+
+```bash
+image=hub.aiursoft.cn/aiursoft/static
+appName=static
+docker pull $image
+docker run -d --name $appName --restart unless-stopped -p 5000:5000 -v /var/www/$appName:/data $image
+```
+
+That will start a web server at `http://localhost:5000` and you can test the app.
+
+The docker image has the following context:
+
+| Properties  | Value                                  |
+|-------------|----------------------------------------|
+| Image       | hub.aiursoft.cn/aiursoft/static        |
+| Ports       | 5000                                   |
+| Binary path | /app                                   |
+| Data path   | /data                                  |
+
+## Use Aiursoft.Static to build your own Docker image
+
+You can use Aiursoft.Static to build your own Docker image. Here is an example of a `Dockerfile`:
+
+Assuming that you have a React project in the current directory that can be built with `yarn build` and the output is in the `build` directory.
+
+```Dockerfile
+# ============================
+# Prepare Build Environment
+FROM hub.aiursoft.cn/node:21-alpine as npm-env
+WORKDIR /src
+COPY . .
+RUN yarn
+RUN yarn build
+
+# ============================
+# Prepare Runtime Environment
+FROM hub.aiursoft.cn/aiursoft/static
+COPY --from=npm-env /src/build /data
+```
+
 ## How to contribute
 
 There are many ways to contribute to the project: logging bugs, submitting pull requests, reporting issues, and creating suggestions.
