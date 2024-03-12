@@ -5,6 +5,7 @@
 [![Test Coverage](https://gitlab.aiursoft.cn/aiursoft/static/badges/master/coverage.svg)](https://gitlab.aiursoft.cn/aiursoft/static/-/pipelines)
 [![NuGet version (Aiursoft.Static)](https://img.shields.io/nuget/v/Aiursoft.Static.svg)](https://www.nuget.org/packages/Aiursoft.Static/)
 [![ManHours](https://manhours.aiursoft.cn/r/gitlab.aiursoft.cn/aiursoft/Static.svg)](https://gitlab.aiursoft.cn/aiursoft/Static/-/commits/master?ref_type=heads)
+[![Docker](https://img.shields.io/badge/docker-latest-blue?logo=docker)](https://hub.aiursoft.cn/#!/taglist/aiursoft/static)
 
 Static is a simple static files HTTP server, as a global tool.
 
