@@ -135,7 +135,8 @@ public class StaticHandler : ExecutableCommandHandlerBuilder
             logger.LogInformation("WebDAV is enabled. Please open your WebDAV client and connect to the server using the following URL: http://localhost:{port}/webdav", port);
             host.UseWebDav(new PathString("/webdav"));
         }
-        
+
+        host.UseMiddleware<NotFoundMiddleware>();
         host.UseStaticFiles(new StaticFileOptions
         {
             ServeUnknownFileTypes = true
