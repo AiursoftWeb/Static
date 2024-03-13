@@ -38,4 +38,9 @@ public static class OptionsProvider
         name: "--enable-webdav-write",
         getDefaultValue: () => false,
         description: "Enable write access for the WebDAV server. This will allow the client to write files to the server. However, this requires the server process to run with write permission.");
+    
+    public static readonly Option<string?> NotFoundPageOption = new (
+        name: "--not-found-page",
+        getDefaultValue: () => null,
+        description: "Specifies a custom 404 page to be served when a requested file is not found. This file should reside in the server's root folder. If this option is left blank or not set, a default 404 response will be returned.");
 }
