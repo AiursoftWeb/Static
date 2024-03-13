@@ -16,16 +16,17 @@ public class StaticHandler : ExecutableCommandHandlerBuilder
 
     protected override string Description => "Start a static file server.";
     
-    protected override Option[] GetCommandOptions() => new Option[]
-    {
+    protected override Option[] GetCommandOptions() =>
+    [
         OptionsProvider.PortOption,
         OptionsProvider.FolderOption,
         OptionsProvider.AllowDirectoryBrowsingOption,
         OptionsProvider.MirrorWebSiteOption,
         OptionsProvider.CachedMirroredFilesOption,
         OptionsProvider.EnableWebDavOption,
-        OptionsProvider.WebDavCanWriteOption
-    };
+        OptionsProvider.WebDavCanWriteOption,
+        OptionsProvider.NotFoundPageOption,
+    ];
 
     protected override async Task Execute(InvocationContext context)
     {
@@ -38,6 +39,8 @@ public class StaticHandler : ExecutableCommandHandlerBuilder
         
         var enableWebDav = context.ParseResult.GetValueForOption(OptionsProvider.EnableWebDavOption);
         var webDavCanWrite = context.ParseResult.GetValueForOption(OptionsProvider.WebDavCanWriteOption);
+        
+        var notFoundPage = context.ParseResult.GetValueForOption(OptionsProvider.NotFoundPageOption);
         
         if (autoMirror is not null && allowDirectoryBrowsing)
         {
@@ -52,7 +55,7 @@ public class StaticHandler : ExecutableCommandHandlerBuilder
             throw new InvalidOperationException("You cannot enable WebDAV write access when WebDAV is not enabled.");
         }
         
-        var app = BuildApp(path, port, allowDirectoryBrowsing, autoMirror, cacheMirror, enableWebDav, webDavCanWrite);
+        var app = BuildApp(path, port, allowDirectoryBrowsing, autoMirror, cacheMirror, enableWebDav, webDavCanWrite, notFoundPage);
         await app.RunAsync();
     }
 
@@ -66,6 +69,7 @@ public class StaticHandler : ExecutableCommandHandlerBuilder
     /// <param name="cacheMirror">Whether to cache the mirrored files or not.</param>
     /// <param name="enableWebDav">Whether to enable WebDAV or not.</param>
     /// <param name="webDavCanWrite">Whether to allow write access for the WebDAV server or not.</param>
+    /// <param name="notFoundPage">The path to the custom 404 page (optional).</param>
     /// <returns>A built and configured instance of WebApplication.</returns>
     private static WebApplication BuildApp(
         string path, 
@@ -74,7 +78,8 @@ public class StaticHandler : ExecutableCommandHandlerBuilder
         string? autoMirror, 
         bool cacheMirror,
         bool enableWebDav,
-        bool webDavCanWrite)
+        bool webDavCanWrite,
+        string? notFoundPage)
     {
         var contentRoot = Path.GetFullPath(path);
         var builder = WebApplication.CreateBuilder(new WebApplicationOptions
@@ -95,6 +100,10 @@ public class StaticHandler : ExecutableCommandHandlerBuilder
         {
             options.MirrorWebSite = autoMirror;
             options.CachedMirroredFiles = cacheMirror;
+        });
+        builder.Services.Configure<NotFoundConfiguration>(options =>
+        {
+            options.NotFoundPage = notFoundPage;
         });
 
         if (enableWebDav)
@@ -134,6 +143,11 @@ public class StaticHandler : ExecutableCommandHandlerBuilder
             var logger = host.Services.GetRequiredService<ILogger<StaticHandler>>();
             logger.LogInformation("WebDAV is enabled. Please open your WebDAV client and connect to the server using the following URL: http://localhost:{port}/webdav", port);
             host.UseWebDav(new PathString("/webdav"));
+        }
+
+        if (notFoundPage is not null)
+        {
+            host.UseMiddleware<NotFoundMiddleware>();
         }
         
         host.UseStaticFiles(new StaticFileOptions
