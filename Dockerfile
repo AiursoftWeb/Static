@@ -14,6 +14,6 @@ COPY --from=build-env /app .
 RUN mkdir -p /data
 RUN echo "<h1>Hello World from Aiursoft Static!</h1>" > /data/index.html
 
-VOLUME /data
+#VOLUME /data
 EXPOSE 5000
 ENTRYPOINT /app/static --port 5000 --path /data
