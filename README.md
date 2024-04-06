@@ -144,6 +144,42 @@ FROM hub.aiursoft.cn/aiursoft/static
 COPY --from=npm-env /src/build /data
 ```
 
+If you want to override the default behavior, simply add the `entrypoint` key to the service.
+
+```Dockerfile
+FROM hub.aiursoft.cn/aiursoft/static
+COPY --from=npm-env /app/public /data
+
+ENTRYPOINT [ "/app/static", "--port", "5000", "--path", "/data", "--not-found-page", "/404.html" ]
+```
+
+## Use Aiursoft.Static in docker-compose
+
+You can use Aiursoft.Static in docker-compose. Here is an example of a `docker-compose.yml`:
+
+```yaml
+version: '3.7'
+
+services:
+  static:
+    image: hub.aiursoft.cn/aiursoft/static
+    volumes:
+      - your-volume:/data
+```
+
+If you want to override the default behavior, simply add the `entrypoint` key to the service.
+
+```yaml
+version: '3.7'
+
+services:
+  static:
+    image: hub.aiursoft.cn/aiursoft/static
+    volumes:
+      - your-volume:/data
+    entrypoint: ["sh", "-c", "/app/static --port 5000 --path /data/mirror/archive.ubuntu.com --allow-directory-browsing"]
+```
+
 ## How to contribute
 
 There are many ways to contribute to the project: logging bugs, submitting pull requests, reporting issues, and creating suggestions.
