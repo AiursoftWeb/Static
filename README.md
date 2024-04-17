@@ -26,7 +26,7 @@ dotnet tool install --global Aiursoft.Static
 After getting the binary, run it directly in the terminal.
 
 ```bash
-$ ./static.exe  --help
+$ static.exe  --help
 Description:
   Start a static file server.
 
