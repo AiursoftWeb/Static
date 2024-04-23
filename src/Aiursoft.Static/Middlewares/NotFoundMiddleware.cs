@@ -10,7 +10,7 @@ public class NotFoundMiddleware(RequestDelegate next, IOptions<NotFoundConfigura
     public async Task InvokeAsync(HttpContext context)
     {
         await next(context);
-        if (context.Response.StatusCode == 404)
+        if (context.Response.StatusCode == 404 && context.Request.Method == "GET")
         {
             var origPath = context.Request.Path;
             context.Request.Path = _options.NotFoundPage!;
