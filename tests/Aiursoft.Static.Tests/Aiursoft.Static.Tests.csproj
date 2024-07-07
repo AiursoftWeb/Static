@@ -12,7 +12,7 @@
     <ProjectReference Include="..\..\src\Aiursoft.Static\Aiursoft.Static.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Aiursoft.CSTools" Version="8.0.3" />
+    <PackageReference Include="Aiursoft.CSTools" Version="8.0.4" />
     <PackageReference Include="coverlet.collector" Version="6.0.2">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
