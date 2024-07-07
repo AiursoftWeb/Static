@@ -1,13 +1,13 @@
 # ============================
 # Prepare Building Environment
-FROM hub.aiursoft.cn/mcr.microsoft.com/dotnet/sdk:8.0 as build-env
+FROM hub.aiursoft.cn/mcr.microsoft.com/dotnet/sdk:8.0 AS build-env
 WORKDIR /src
 COPY . .
-RUN dotnet publish ./src/Aiursoft.Static/Aiursoft.Static.csproj  --configuration Release --no-self-contained --runtime linux-x64 --output /app
+RUN dotnet publish ./src/Aiursoft.Static/Aiursoft.Static.csproj  --configuration ReleASe --no-self-contained --runtime linux-x64 --output /app
 
 # ============================
 # Prepare Runtime Environment
-FROM hub.aiursoft.cn/mcr.microsoft.com/dotnet/aspnet:8.0
+FROM hub.aiursoft.cn/mcr.microsoft.com/dotnet/ASpnet:8.0
 WORKDIR /app
 COPY --from=build-env /app .
 
