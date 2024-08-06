@@ -6,6 +6,7 @@ using Aiursoft.Static.Extensions;
 using Aiursoft.Static.Middlewares;
 using Aiursoft.Static.Models.Configuration;
 using Aiursoft.WebDav;
+using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.FileProviders;
 
 namespace Aiursoft.Static.Handlers;
@@ -68,7 +69,7 @@ public class StaticHandler : ExecutableCommandHandlerBuilder
     /// <param name="autoMirror">The URL of the website to mirror (optional).</param>
     /// <param name="cacheMirror">Whether to cache the mirrored files or not.</param>
     /// <param name="enableWebDav">Whether to enable WebDAV or not.</param>
-    /// <param name="webDavCanWrite">Whether to allow write access for the WebDAV server or not.</param>
+    /// <param name="webDavCanWrite">Whether to allow to write access for the WebDAV server or not.</param>
     /// <param name="notFoundPage">The path to the custom 404 page (optional).</param>
     /// <returns>A built and configured instance of WebApplication.</returns>
     private static WebApplication BuildApp(
@@ -150,9 +151,18 @@ public class StaticHandler : ExecutableCommandHandlerBuilder
             host.UseMiddleware<NotFoundMiddleware>();
         }
         
+        var provider = new FileExtensionContentTypeProvider
+        {
+            Mappings =
+            {
+                [".torrent"] = "application/octet-stream"
+            }
+        };
+
         host.UseStaticFiles(new StaticFileOptions
         {
-            ServeUnknownFileTypes = true
+            ServeUnknownFileTypes = true,
+            ContentTypeProvider = provider
         });
         
         return host;
