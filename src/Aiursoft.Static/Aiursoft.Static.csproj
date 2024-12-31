@@ -1,8 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <Version>8.0.10</Version>
-    <TargetFramework>net8.0</TargetFramework>
+    <Version>9.0.0</Version>
+    <TargetFramework>net9.0</TargetFramework>
     <AssemblyName>static</AssemblyName>
     <RootNamespace>Aiursoft.Static</RootNamespace>
     <IsTestProject>false</IsTestProject>
@@ -25,7 +25,7 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Aiursoft.CommandFramework" Version="8.0.6" />
+    <PackageReference Include="Aiursoft.CommandFramework" Version="9.0.1" />
     <PackageReference Include="Aiursoft.WebDav" Version="8.0.2" />
     <None Include="../../README.md" Pack="true" PackagePath="." />
   </ItemGroup>
