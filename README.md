@@ -56,7 +56,7 @@ It will start an HTTP server on http://localhost:8080.
 You can install this tool for all users by running the following command:
 
 ```bash
-sudo apt install -y dotnet8
+sudo apt install -y dotnet9
 sudo dotnet tool install Aiursoft.Static --tool-path /opt/static || sudo dotnet tool update Aiursoft.Static --tool-path /opt/static
 sudo chmod +x /opt/static/static
 ```
