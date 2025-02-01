@@ -7,7 +7,7 @@ RUN dotnet publish ./src/Aiursoft.Static/Aiursoft.Static.csproj  --configuration
 
 # ============================
 # Prepare Runtime Environment
-FROM hub.aiursoft.cn/mcr.microsoft.com/dotnet/aspnet:9.0
+FROM hub.aiursoft.cn/aiursoft/internalimages/dotnet
 WORKDIR /app
 COPY --from=build-env /app .
 
