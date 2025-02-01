@@ -9,10 +9,10 @@ public static class OptionsProvider
         getDefaultValue: () => 8080,
         description: "The port to listen for the server.");
     
-    public static readonly Option<string> FolderOption = new (
+    public static readonly Option<string> PathOption = new (
         name: "--path",
         getDefaultValue: () => ".",
-        description: "The folder to start the server.");
+        description: "The path to start the server.");
     
     public static readonly Option<bool> AllowDirectoryBrowsingOption = new (
         name: "--allow-directory-browsing",

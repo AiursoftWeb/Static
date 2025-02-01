@@ -20,7 +20,7 @@ public class StaticHandler : ExecutableCommandHandlerBuilder
     protected override Option[] GetCommandOptions() =>
     [
         OptionsProvider.PortOption,
-        OptionsProvider.FolderOption,
+        OptionsProvider.PathOption,
         OptionsProvider.AllowDirectoryBrowsingOption,
         OptionsProvider.MirrorWebSiteOption,
         OptionsProvider.CachedMirroredFilesOption,
@@ -31,7 +31,7 @@ public class StaticHandler : ExecutableCommandHandlerBuilder
 
     protected override async Task Execute(InvocationContext context)
     {
-        var path = context.ParseResult.GetValueForOption(OptionsProvider.FolderOption)!;
+        var path = context.ParseResult.GetValueForOption(OptionsProvider.PathOption)!;
         var port = context.ParseResult.GetValueForOption(OptionsProvider.PortOption);
         var allowDirectoryBrowsing = context.ParseResult.GetValueForOption(OptionsProvider.AllowDirectoryBrowsingOption);
         
