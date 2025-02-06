@@ -5,7 +5,7 @@
 [![Test Coverage](https://gitlab.aiursoft.cn/aiursoft/static/badges/master/coverage.svg)](https://gitlab.aiursoft.cn/aiursoft/static/-/pipelines)
 [![NuGet version (Aiursoft.Static)](https://img.shields.io/nuget/v/Aiursoft.Static.svg)](https://www.nuget.org/packages/Aiursoft.Static/)
 [![ManHours](https://manhours.aiursoft.cn/r/gitlab.aiursoft.cn/aiursoft/Static.svg)](https://gitlab.aiursoft.cn/aiursoft/Static/-/commits/master?ref_type=heads)
-[![Docker](https://img.shields.io/badge/docker-latest-blue?logo=docker)](https://hub.aiursoft.cn/#!/taglist/aiursoft/static)
+[![Docker](https://img.shields.io/docker/pulls/aiursoft/static.svg)](https://hub.docker.com/r/aiursoft/static)
 
 Static is a simple static files HTTP server, as a global tool.
 
@@ -111,7 +111,7 @@ First, install Docker [here](https://docs.docker.com/get-docker/).
 Then run the following commands in a Linux shell:
 
 ```bash
-image=hub.aiursoft.cn/aiursoft/static
+image=aiursoft/static
 appName=static
 sudo docker pull $image
 sudo docker run -d --name $appName --restart unless-stopped -p 5000:5000 -v /var/www/$appName:/data $image
@@ -123,7 +123,7 @@ The docker image has the following context:
 
 | Properties  | Value                                  |
 |-------------|----------------------------------------|
-| Image       | hub.aiursoft.cn/aiursoft/static        |
+| Image       | aiursoft/static        |
 | Ports       | 5000                                   |
 | Binary path | /app                                   |
 | Data path   | /data                                  |
@@ -137,7 +137,7 @@ Assuming that you have a React project in the current directory that can be buil
 ```Dockerfile
 # ============================
 # Prepare Build Environment
-FROM hub.aiursoft.cn/node:21-alpine as npm-env
+FROM node:21-alpine as npm-env
 WORKDIR /src
 COPY . .
 RUN yarn
@@ -145,14 +145,14 @@ RUN yarn build
 
 # ============================
 # Prepare Runtime Environment
-FROM hub.aiursoft.cn/aiursoft/static
+FROM aiursoft/static
 COPY --from=npm-env /src/build /data
 ```
 
 If you want to override the default behavior, simply add the `entrypoint` key to the service.
 
 ```Dockerfile
-FROM hub.aiursoft.cn/aiursoft/static
+FROM aiursoft/static
 COPY --from=npm-env /app/public /data
 
 ENTRYPOINT [ "/app/static", "--port", "5000", "--path", "/data", "--not-found-page", "/404.html" ]
@@ -167,7 +167,7 @@ version: '3.7'
 
 services:
   static:
-    image: hub.aiursoft.cn/aiursoft/static
+    image: aiursoft/static
     volumes:
       - your-volume:/data
 ```
@@ -179,7 +179,7 @@ version: '3.7'
 
 services:
   static:
-    image: hub.aiursoft.cn/aiursoft/static
+    image: aiursoft/static
     volumes:
       - your-volume:/data
     entrypoint: ["sh", "-c", "/app/static --port 5000 --path /data/mirror/archive.ubuntu.com --allow-directory-browsing"]
