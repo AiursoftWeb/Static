@@ -9,6 +9,8 @@
 
 Static is a simple static files HTTP server, as a global tool.
 
+![overview](./screenshot.png)
+
 ## Install
 
 Requirements:
