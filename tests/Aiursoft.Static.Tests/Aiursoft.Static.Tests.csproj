@@ -21,7 +21,7 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
     <PackageReference Include="MSTest.TestAdapter" Version="3.8.3" />
     <PackageReference Include="MSTest.TestFramework" Version="3.8.3" />
-    <PackageReference Include="WebDav.Client" Version="2.8.0" />
+    <PackageReference Include="WebDav.Client" Version="2.9.0" />
   </ItemGroup>
   <ItemGroup>
     <None Update="Assets\index.html">
