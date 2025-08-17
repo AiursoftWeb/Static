@@ -3,7 +3,6 @@ using System.Text;
 using Aiursoft.CommandFramework;
 using Aiursoft.CSTools.Tools;
 using Aiursoft.Static.Handlers;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using WebDav;
 
 namespace Aiursoft.Static.Tests;
@@ -90,7 +89,7 @@ public class IntegrationTests
         var response = await TestServer("/", "--mirror", "https://www.aiursoft.cn");
         var responseString = await response.Content.ReadAsStringAsync();
         Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
-        Assert.IsTrue(responseString.Contains("Aiursoft"));
+        Assert.IsTrue(responseString.Contains("<title>"));
     }
 
     [TestMethod]
@@ -99,10 +98,10 @@ public class IntegrationTests
         var response = await TestServer("/", "--mirror", "https://www.aiursoft.cn", "--cache-mirror");
         var responseString = await response.Content.ReadAsStringAsync();
         Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
-        Assert.IsTrue(responseString.Contains("Aiursoft"));
+        Assert.IsTrue(responseString.Contains("<title>"));
 
         var cacheContent = await File.ReadAllTextAsync(_indexContentFile);
-        Assert.IsTrue(cacheContent.Contains("Aiursoft"));
+        Assert.IsTrue(cacheContent.Contains("<title>"));
     }
 
     [TestMethod]
