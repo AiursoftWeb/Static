@@ -12,7 +12,7 @@ public class MirrorMiddleware
 
     public MirrorMiddleware(
         IOptions<MirrorConfiguration> options,
-        RequestDelegate next, 
+        RequestDelegate next,
         ILogger<WebApplication> logger,
         HttpClient client)
     {
@@ -27,26 +27,26 @@ public class MirrorMiddleware
         await _next(context);
         if (context.Response.StatusCode == 404 && context.Request.Method == "GET")
         {
-            _logger.LogWarning($"404: {context.Request.Path}, but enabled auto mirror. Will try to mirror the file.");
+            _logger.LogWarning("404: {RequestPath}, but enabled auto mirror. Will try to mirror the file.", context.Request.Path);
             var requestPath = context.Request.Path.Value;
             var mirrorPath = _options.MirrorWebSite + requestPath;
             var mirrorResponse = await _client.GetAsync(mirrorPath);
             if (mirrorResponse.IsSuccessStatusCode)
             {
-                _logger.LogTrace($"File: {mirrorPath} can be mirrored.");
+                _logger.LogTrace("File: {MirrorPath} can be mirrored.", mirrorPath);
                 var contentType = mirrorResponse.Content.Headers.ContentType?.MediaType;
                 var content = await mirrorResponse.Content.ReadAsByteArrayAsync();
                 context.Response.StatusCode = 200;
                 context.Response.ContentType = contentType;
                 await context.Response.Body.WriteAsync(content);
-                _logger.LogInformation($"Mirrored file done successfully: {mirrorPath}");
-                
+                _logger.LogInformation("Mirrored file done successfully: {MirrorPath}", mirrorPath);
+
                 if (_options.CachedMirroredFiles)
                 {
-                    _logger.LogTrace($"The mirrored file: {mirrorPath} can be cached.");
+                    _logger.LogTrace("The mirrored file: {MirrorPath} can be cached.", mirrorPath);
                     var requestFilePath = requestPath!.Split('?')[0];
                     var contentRoot = context.RequestServices.GetRequiredService<IWebHostEnvironment>().ContentRootPath;
-                    
+
                     // If no extension, assume it's a directory and append index.html
                     if (Path.GetExtension(requestFilePath) == string.Empty)
                     {
@@ -56,10 +56,10 @@ public class MirrorMiddleware
                     var file = new FileInfo(filePath);
                     file.Directory?.Create();
                     await File.WriteAllBytesAsync(file.FullName, content);
-                    _logger.LogInformation($"Cached file done successfully: {filePath}");
+                    _logger.LogInformation("Cached file done successfully: {FilePath}", filePath);
                 }
             }
         }
-       
+
     }
 }
