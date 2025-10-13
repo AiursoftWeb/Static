@@ -8,6 +8,8 @@ using Aiursoft.Static.Models.Configuration;
 using Aiursoft.WebDav;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Http;
+using Microsoft.Extensions.Options;
 
 namespace Aiursoft.Static.Handlers;
 
@@ -16,7 +18,7 @@ public class StaticHandler : ExecutableCommandHandlerBuilder
     protected override string Name => "static";
 
     protected override string Description => "Start a static file server.";
-    
+
     protected override Option[] GetCommandOptions() =>
     [
         OptionsProvider.PortOption,
@@ -34,15 +36,15 @@ public class StaticHandler : ExecutableCommandHandlerBuilder
         var path = context.ParseResult.GetValueForOption(OptionsProvider.PathOption)!;
         var port = context.ParseResult.GetValueForOption(OptionsProvider.PortOption);
         var allowDirectoryBrowsing = context.ParseResult.GetValueForOption(OptionsProvider.AllowDirectoryBrowsingOption);
-        
+
         var autoMirror = context.ParseResult.GetValueForOption(OptionsProvider.MirrorWebSiteOption);
         var cacheMirror = context.ParseResult.GetValueForOption(OptionsProvider.CachedMirroredFilesOption);
-        
+
         var enableWebDav = context.ParseResult.GetValueForOption(OptionsProvider.EnableWebDavOption);
         var webDavCanWrite = context.ParseResult.GetValueForOption(OptionsProvider.WebDavCanWriteOption);
-        
+
         var notFoundPage = context.ParseResult.GetValueForOption(OptionsProvider.NotFoundPageOption);
-        
+
         if (autoMirror is not null && allowDirectoryBrowsing)
         {
             throw new InvalidOperationException("You cannot enable directory browsing when you are mirroring a website. This is because the directory browsing will be blocked by the mirror middleware.");
@@ -55,7 +57,7 @@ public class StaticHandler : ExecutableCommandHandlerBuilder
         {
             throw new InvalidOperationException("You cannot enable WebDAV write access when WebDAV is not enabled.");
         }
-        
+
         var app = BuildApp(path, port, allowDirectoryBrowsing, autoMirror, cacheMirror, enableWebDav, webDavCanWrite, notFoundPage);
         await app.RunAsync();
     }
@@ -73,10 +75,10 @@ public class StaticHandler : ExecutableCommandHandlerBuilder
     /// <param name="notFoundPage">The path to the custom 404 page (optional).</param>
     /// <returns>A built and configured instance of WebApplication.</returns>
     private static WebApplication BuildApp(
-        string path, 
-        int port, 
-        bool allowDirectoryBrowsing, 
-        string? autoMirror, 
+        string path,
+        int port,
+        bool allowDirectoryBrowsing,
+        string? autoMirror,
         bool cacheMirror,
         bool enableWebDav,
         bool webDavCanWrite,
@@ -114,8 +116,15 @@ public class StaticHandler : ExecutableCommandHandlerBuilder
                 .AddWebDav(x => x.IsReadOnly = readonlyWebDav)
                 .AddFilesystem(options => options.SourcePath = contentRoot);
         }
-        
+
         builder.Services.AddHttpClient();
+        builder.Services.Configure<HttpClientFactoryOptions>(Options.DefaultName, options =>
+        {
+            options.HttpClientActions.Add(client =>
+            {
+                client.Timeout = Timeout.InfiniteTimeSpan;
+            });
+        });
         var host = builder.Build();
         host.UseForwardedHeaders();
         if (allowDirectoryBrowsing)
@@ -126,7 +135,7 @@ public class StaticHandler : ExecutableCommandHandlerBuilder
                 Formatter = new SortedHtmlDirectoryFormatter(HtmlEncoder.Default),
             });
         }
-        
+
         if (autoMirror is not null)
         {
             host.UseMiddleware<MirrorMiddleware>();
@@ -138,7 +147,7 @@ public class StaticHandler : ExecutableCommandHandlerBuilder
                 DefaultFileNames = new List<string> { "index.html", "index.htm" }
             });
         }
-        
+
         if (enableWebDav)
         {
             var logger = host.Services.GetRequiredService<ILogger<StaticHandler>>();
@@ -150,7 +159,7 @@ public class StaticHandler : ExecutableCommandHandlerBuilder
         {
             host.UseMiddleware<NotFoundMiddleware>();
         }
-        
+
         var provider = new FileExtensionContentTypeProvider
         {
             Mappings =
@@ -164,7 +173,7 @@ public class StaticHandler : ExecutableCommandHandlerBuilder
             ServeUnknownFileTypes = true,
             ContentTypeProvider = provider
         });
-        
+
         return host;
     }
 }

@@ -26,7 +26,7 @@ public class MirrorMiddleware(
         try
         {
             // Set up a cancellation token with the configured timeout.
-            using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(300));
+            using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(1200));
 
             // Pass the token to the GetAsync method.
             var mirrorResponse = await client.GetAsync(mirrorPath, cts.Token);
@@ -50,7 +50,7 @@ public class MirrorMiddleware(
         // This exception is thrown when the timeout is reached.
         catch (OperationCanceledException)
         {
-            logger.LogWarning("Mirroring timed out for {MirrorPath} after {Timeout} seconds.", mirrorPath, 300);
+            logger.LogWarning("Mirroring timed out for {MirrorPath} after {Timeout} seconds.", mirrorPath, 1200);
             // Do nothing here. The response status code remains 404, which is correct.
         }
         catch (Exception ex)
