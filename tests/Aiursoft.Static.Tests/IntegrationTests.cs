@@ -5,6 +5,8 @@ using Aiursoft.CSTools.Tools;
 using Aiursoft.Static.Handlers;
 using WebDav;
 
+[assembly: DoNotParallelize]
+
 namespace Aiursoft.Static.Tests;
 
 [TestClass]
@@ -80,7 +82,7 @@ public class IntegrationTests
         var response = await TestServer("/", "--allow-directory-browsing");
         var responseString = await response.Content.ReadAsStringAsync();
         Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
-        Assert.IsTrue(responseString.Contains("index.html"));
+        Assert.Contains("index.html", responseString);
     }
 
     [TestMethod]
@@ -89,7 +91,7 @@ public class IntegrationTests
         var response = await TestServer("/", "--mirror", "https://www.aiursoft.cn");
         var responseString = await response.Content.ReadAsStringAsync();
         Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
-        Assert.IsTrue(responseString.Contains("<title>"));
+        Assert.Contains("<title>", responseString);
     }
 
     [TestMethod]
@@ -98,10 +100,10 @@ public class IntegrationTests
         var response = await TestServer("/", "--mirror", "https://www.aiursoft.cn", "--cache-mirror");
         var responseString = await response.Content.ReadAsStringAsync();
         Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
-        Assert.IsTrue(responseString.Contains("<title>"));
+        Assert.Contains("<title>", responseString);
 
         var cacheContent = await File.ReadAllTextAsync(_indexContentFile);
-        Assert.IsTrue(cacheContent.Contains("<title>"));
+        Assert.Contains("<title>", cacheContent);
     }
 
     [TestMethod]
@@ -111,7 +113,7 @@ public class IntegrationTests
             "--enable-webdav");
         var responseString = await response.Content.ReadAsStringAsync();
         Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
-        Assert.IsTrue(responseString.Contains("Hello world!"));
+        Assert.Contains("Hello world!", responseString);
     }
 
     [TestMethod]
