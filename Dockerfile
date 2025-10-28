@@ -1,13 +1,13 @@
 # ============================
 # Prepare Building Environment
-FROM hub.aiursoft.cn/aiursoft/internalimages/dotnet AS build-env
+FROM hub.aiursoft.com/aiursoft/internalimages/dotnet AS build-env
 WORKDIR /src
 COPY . .
 RUN dotnet publish ./src/Aiursoft.Static/Aiursoft.Static.csproj  --configuration Release --no-self-contained --runtime linux-x64 --output /app
 
 # ============================
 # Prepare Runtime Environment
-FROM hub.aiursoft.cn/aiursoft/internalimages/dotnet
+FROM hub.aiursoft.com/aiursoft/internalimages/dotnet
 WORKDIR /app
 COPY --from=build-env /app .
 
