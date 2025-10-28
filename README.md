@@ -1,10 +1,10 @@
 # Aiursoft.Static
 
-[![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](https://gitlab.aiursoft.cn/aiursoft/static/-/blob/master/LICENSE)
-[![Pipeline stat](https://gitlab.aiursoft.cn/aiursoft/static/badges/master/pipeline.svg)](https://gitlab.aiursoft.cn/aiursoft/static/-/pipelines)
-[![Test Coverage](https://gitlab.aiursoft.cn/aiursoft/static/badges/master/coverage.svg)](https://gitlab.aiursoft.cn/aiursoft/static/-/pipelines)
+[![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](https://gitlab.aiursoft.com/aiursoft/static/-/blob/master/LICENSE)
+[![Pipeline stat](https://gitlab.aiursoft.com/aiursoft/static/badges/master/pipeline.svg)](https://gitlab.aiursoft.com/aiursoft/static/-/pipelines)
+[![Test Coverage](https://gitlab.aiursoft.com/aiursoft/static/badges/master/coverage.svg)](https://gitlab.aiursoft.com/aiursoft/static/-/pipelines)
 [![NuGet version (Aiursoft.Static)](https://img.shields.io/nuget/v/Aiursoft.Static.svg)](https://www.nuget.org/packages/Aiursoft.Static/)
-[![ManHours](https://manhours.aiursoft.cn/r/gitlab.aiursoft.cn/aiursoft/Static.svg)](https://gitlab.aiursoft.cn/aiursoft/Static/-/commits/master?ref_type=heads)
+[![ManHours](https://manhours.aiursoft.cn/r/gitlab.aiursoft.com/aiursoft/Static.svg)](https://gitlab.aiursoft.com/aiursoft/Static/-/commits/master?ref_type=heads)
 [![Docker](https://img.shields.io/docker/pulls/aiursoft/static.svg)](https://hub.docker.com/r/aiursoft/static)
 
 Static is a simple static files HTTP server, as a global tool.

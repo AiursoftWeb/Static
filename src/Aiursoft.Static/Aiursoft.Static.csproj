@@ -19,9 +19,9 @@
     <PackageId>Aiursoft.Static</PackageId>
     <PackageTags>cli nuget dotnet csproj http static</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageProjectUrl>https://gitlab.aiursoft.cn/aiursoft/static</PackageProjectUrl>
+    <PackageProjectUrl>https://gitlab.aiursoft.com/aiursoft/static</PackageProjectUrl>
     <RepositoryType>git</RepositoryType>
-    <RepositoryUrl>https://gitlab.aiursoft.cn/aiursoft/static</RepositoryUrl>
+    <RepositoryUrl>https://gitlab.aiursoft.com/aiursoft/static</RepositoryUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
   <ItemGroup>
