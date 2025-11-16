@@ -31,19 +31,19 @@ public class StaticHandler : ExecutableCommandHandlerBuilder
         OptionsProvider.NotFoundPageOption,
     ];
 
-    protected override async Task Execute(InvocationContext context)
+    protected override async Task Execute(ParseResult context)
     {
-        var path = context.ParseResult.GetValueForOption(OptionsProvider.PathOption)!;
-        var port = context.ParseResult.GetValueForOption(OptionsProvider.PortOption);
-        var allowDirectoryBrowsing = context.ParseResult.GetValueForOption(OptionsProvider.AllowDirectoryBrowsingOption);
+        var path = context.GetValue(OptionsProvider.PathOption)!;
+        var port = context.GetValue(OptionsProvider.PortOption);
+        var allowDirectoryBrowsing = context.GetValue(OptionsProvider.AllowDirectoryBrowsingOption);
 
-        var autoMirror = context.ParseResult.GetValueForOption(OptionsProvider.MirrorWebSiteOption);
-        var cacheMirror = context.ParseResult.GetValueForOption(OptionsProvider.CachedMirroredFilesOption);
+        var autoMirror = context.GetValue(OptionsProvider.MirrorWebSiteOption);
+        var cacheMirror = context.GetValue(OptionsProvider.CachedMirroredFilesOption);
 
-        var enableWebDav = context.ParseResult.GetValueForOption(OptionsProvider.EnableWebDavOption);
-        var webDavCanWrite = context.ParseResult.GetValueForOption(OptionsProvider.WebDavCanWriteOption);
+        var enableWebDav = context.GetValue(OptionsProvider.EnableWebDavOption);
+        var webDavCanWrite = context.GetValue(OptionsProvider.WebDavCanWriteOption);
 
-        var notFoundPage = context.ParseResult.GetValueForOption(OptionsProvider.NotFoundPageOption);
+        var notFoundPage = context.GetValue(OptionsProvider.NotFoundPageOption);
 
         if (autoMirror is not null && allowDirectoryBrowsing)
         {
