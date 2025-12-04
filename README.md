@@ -4,7 +4,7 @@
 [![Pipeline stat](https://gitlab.aiursoft.com/aiursoft/static/badges/master/pipeline.svg)](https://gitlab.aiursoft.com/aiursoft/static/-/pipelines)
 [![Test Coverage](https://gitlab.aiursoft.com/aiursoft/static/badges/master/coverage.svg)](https://gitlab.aiursoft.com/aiursoft/static/-/pipelines)
 [![NuGet version (Aiursoft.Static)](https://img.shields.io/nuget/v/Aiursoft.Static.svg)](https://www.nuget.org/packages/Aiursoft.Static/)
-[![ManHours](https://manhours.aiursoft.com/r/gitlab.aiursoft.com/aiursoft/Static.svg)](https://gitlab.aiursoft.com/aiursoft/Static/-/commits/master?ref_type=heads)
+[![Man hours](https://manhours.aiursoft.com/r/gitlab.aiursoft.com/aiursoft/Static.svg)](https://manhours.aiursoft.com/r/gitlab.aiursoft.com/aiursoft/Static.html)
 [![Docker](https://img.shields.io/docker/pulls/aiursoft/static.svg)](https://hub.docker.com/r/aiursoft/static)
 
 Static is a simple static files HTTP server, as a global tool.
