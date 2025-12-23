@@ -139,7 +139,7 @@ Assuming that you have a React project in the current directory that can be buil
 ```Dockerfile
 # ============================
 # Prepare Build Environment
-FROM node:21-alpine as npm-env
+FROM node:24-alpine as npm-env
 WORKDIR /src
 COPY . .
 RUN yarn
