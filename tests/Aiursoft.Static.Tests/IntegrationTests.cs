@@ -88,7 +88,7 @@ public class IntegrationTests
     [TestMethod]
     public async Task TestMirrorWithoutCache()
     {
-        var response = await TestServer("/", "--mirror", "https://www.anduinos.com");
+        var response = await TestServer("/", "--mirror", "https://www.baidu.com");
         var responseString = await response.Content.ReadAsStringAsync();
         Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
         Assert.Contains("<title>", responseString);
@@ -97,7 +97,7 @@ public class IntegrationTests
     [TestMethod]
     public async Task TestMirrorWithCache()
     {
-        var response = await TestServer("/", "--mirror", "https://www.anduinos.com", "--cache-mirror");
+        var response = await TestServer("/", "--mirror", "https://www.baidu.com", "--cache-mirror");
         var responseString = await response.Content.ReadAsStringAsync();
         Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
         Assert.Contains("<title>", responseString);
