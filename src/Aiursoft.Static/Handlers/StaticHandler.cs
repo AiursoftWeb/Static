@@ -28,6 +28,7 @@ public class StaticHandler : ExecutableCommandHandlerBuilder
         OptionsProvider.EnableWebDavOption,
         OptionsProvider.WebDavCanWriteOption,
         OptionsProvider.NotFoundPageOption,
+        OptionsProvider.MaxSpeedKbpsOption,
     ];
 
     protected override async Task Execute(ParseResult context)
@@ -43,6 +44,7 @@ public class StaticHandler : ExecutableCommandHandlerBuilder
         var webDavCanWrite = context.GetValue(OptionsProvider.WebDavCanWriteOption);
 
         var notFoundPage = context.GetValue(OptionsProvider.NotFoundPageOption);
+        var maxSpeedKbps = context.GetValue(OptionsProvider.MaxSpeedKbpsOption);
 
         if (autoMirror is not null && allowDirectoryBrowsing)
         {
@@ -57,7 +59,7 @@ public class StaticHandler : ExecutableCommandHandlerBuilder
             throw new InvalidOperationException("You cannot enable WebDAV write access when WebDAV is not enabled.");
         }
 
-        var app = BuildApp(path, port, allowDirectoryBrowsing, autoMirror, cacheMirror, enableWebDav, webDavCanWrite, notFoundPage);
+        var app = BuildApp(path, port, allowDirectoryBrowsing, autoMirror, cacheMirror, enableWebDav, webDavCanWrite, notFoundPage, maxSpeedKbps);
         await app.RunAsync();
     }
 
@@ -72,6 +74,7 @@ public class StaticHandler : ExecutableCommandHandlerBuilder
     /// <param name="enableWebDav">Whether to enable WebDAV or not.</param>
     /// <param name="webDavCanWrite">Whether to allow to write access for the WebDAV server or not.</param>
     /// <param name="notFoundPage">The path to the custom 404 page (optional).</param>
+    /// <param name="maxSpeedKbps">Per-connection download speed limit in KiB/s. 0 means unlimited.</param>
     /// <returns>A built and configured instance of WebApplication.</returns>
     private static WebApplication BuildApp(
         string path,
@@ -81,7 +84,8 @@ public class StaticHandler : ExecutableCommandHandlerBuilder
         bool cacheMirror,
         bool enableWebDav,
         bool webDavCanWrite,
-        string? notFoundPage)
+        string? notFoundPage,
+        int maxSpeedKbps = 0)
     {
         var contentRoot = Path.GetFullPath(path);
         var builder = WebApplication.CreateBuilder(new WebApplicationOptions
@@ -157,6 +161,12 @@ public class StaticHandler : ExecutableCommandHandlerBuilder
         if (notFoundPage is not null)
         {
             host.UseMiddleware<NotFoundMiddleware>();
+        }
+
+        if (maxSpeedKbps > 0)
+        {
+            var maxBytesPerSecond = maxSpeedKbps * 1024;
+            host.UseMiddleware<SpeedLimitMiddleware>(maxBytesPerSecond);
         }
 
         var provider = new FileExtensionContentTypeProvider

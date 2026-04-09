@@ -60,4 +60,11 @@ public static class OptionsProvider
         DefaultValueFactory = _ => null,
         Description = "Specifies a custom 404 page to be served when a requested file is not found. This file should reside in the server's root folder. If this option is left blank or not set, a default 404 response will be returned."
     };
+
+    public static readonly Option<int> MaxSpeedKbpsOption = new (
+        name: "--max-speed-kbps")
+    {
+        DefaultValueFactory = _ => 0,
+        Description = "Limit the download speed per connection in KiB/s. 0 means unlimited. Example: --max-speed-kbps 10240 limits each connection to 10 MiB/s."
+    };
 }
