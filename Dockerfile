@@ -12,7 +12,7 @@ RUN if [ "$TARGETARCH" = "arm64" ]; then \
         RID="linux-$TARGETARCH"; \
     fi && \
     echo "Building for arch: $TARGETARCH, using .NET RID: $RID" && \
-    dotnet publish ./src/Aiursoft.Static/Aiursoft.Static.csproj --configuration Release --no-self-contained --runtime $RID --output /app
+    dotnet publish ./src/Aiursoft.Static/Aiursoft.Static.csproj --configuration Release --no-self-contained --runtime $RID --output /app --configfile nuget.config
 
 # ============================
 # Prepare Runtime Environment
