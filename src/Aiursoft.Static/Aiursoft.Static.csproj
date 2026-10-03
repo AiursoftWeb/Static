@@ -25,6 +25,7 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
   <ItemGroup>
+    <InternalsVisibleTo Include="Aiursoft.Static.Tests" />
     <PackageReference Include="Aiursoft.CommandFramework" Version="10.0.14" />
     <PackageReference Include="Aiursoft.WebDav" Version="10.0.0" />
     <None Include="../../README.md" Pack="true" PackagePath="." />

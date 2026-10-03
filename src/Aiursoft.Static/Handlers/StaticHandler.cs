@@ -76,7 +76,7 @@ public class StaticHandler : ExecutableCommandHandlerBuilder
     /// <param name="notFoundPage">The path to the custom 404 page (optional).</param>
     /// <param name="maxSpeedKbps">Per-connection download speed limit in KiB/s. 0 means unlimited.</param>
     /// <returns>A built and configured instance of WebApplication.</returns>
-    private static WebApplication BuildApp(
+    internal static WebApplication BuildApp(
         string path,
         int port,
         bool allowDirectoryBrowsing,

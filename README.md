@@ -53,6 +53,29 @@ Options:
 It will start an HTTP server on http://localhost:8080.
 ```
 
+## Mirror cache behavior
+
+With `--mirror` and `--cache-mirror`, successful GET responses for missing
+local files are stored under `--path`. Extensionless paths such as `InRelease`
+and `by-hash/SHA256/<digest>` are stored as files. Only paths ending in `/`
+are stored as `index.html`; this does not enable directory browsing or change
+the existing directory URL serving behavior in mirror mode.
+
+Cache files are published by a same-directory atomic rename. Subsequent file
+requests use the static file server, including conditional GET and HEAD support.
+Cache write failures are logged but do not prevent serving the upstream body.
+
+The cache has no automatic expiration or upstream revalidation. Deployments
+must expire mutable repository metadata together on an appropriate schedule;
+local ETags describe the cached file, not the current upstream version.
+
+When upgrading from the old extension-based cache layout, move aside or remove
+confirmed legacy `<file>/index.html` cache directories before warming the new
+cache. This also applies to extensionless `by-hash` entries. Static deliberately
+does not remove existing directories automatically. For an APT mirror, a
+maintenance-time move of the `ubuntu/dists` cache to a backup outside the served
+root permits fresh indexes without discarding the `ubuntu/pool` package cache.
+
 ## Install for all users
 
 You can install this tool for all users by running the following command:
