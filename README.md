@@ -3,6 +3,7 @@
 [![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/AiursoftWeb/static/blob/master/LICENSE)
 [![Pipeline stat](https://gitlab.aiursoft.com/aiursoft/static/badges/master/pipeline.svg)](https://gitlab.aiursoft.com/aiursoft/static/-/pipelines)
 [![Test Coverage](https://gitlab.aiursoft.com/aiursoft/static/badges/master/coverage.svg)](https://gitlab.aiursoft.com/aiursoft/static/-/pipelines)
+[![S360 compliance](https://s360.aiursoft.com/badge.svg?project=aiursoft%2Fstatic)](https://s360.aiursoft.com/SupplyChain?tab=projects&project=aiursoft%2Fstatic&scope=baseline&ecosystem=all)
 [![NuGet version (Aiursoft.Static)](https://img.shields.io/nuget/v/Aiursoft.Static.svg)](https://www.nuget.org/packages/Aiursoft.Static/)
 [![Man hours](https://manhours.aiursoft.com/r/github.com/aiursoftweb/Static.svg)](https://manhours.aiursoft.com/r/github.com/aiursoftweb/Static.html)
 [![Docker](https://img.shields.io/docker/pulls/aiursoft/static.svg)](https://hub.docker.com/r/aiursoft/static)
