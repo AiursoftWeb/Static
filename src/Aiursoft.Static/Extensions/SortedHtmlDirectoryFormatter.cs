@@ -12,7 +12,7 @@ public class SortedHtmlDirectoryFormatter : HtmlDirectoryFormatter
     {
         // Order folders first, then files
         // Then order by name
-        var sorted = contents.OrderBy(x => !x.IsDirectory).ThenBy(x => x.Name);
+        var sorted = contents.OrderBy(x => !x.IsDirectory).ThenBy(x => x.Name, StringComparer.Ordinal);
         return base.GenerateContentAsync(context, sorted);
     }
 }
