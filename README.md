@@ -1,5 +1,6 @@
-# Aiursoft.Static
+# Aiursoft Static
 
+<a name="aiursoftstatic"></a>
 [![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/AiursoftWeb/static/blob/master/LICENSE)
 [![Pipeline stat](https://badge-proxy.aiursoft.com/aiursoft/static/badges/master/pipeline.svg)](https://gitlab.aiursoft.com/aiursoft/static/-/pipelines)
 [![Test Coverage](https://badge-proxy.aiursoft.com/aiursoft/static/badges/master/coverage.svg)](https://gitlab.aiursoft.com/aiursoft/static/-/pipelines)
@@ -12,84 +13,47 @@ Static is a simple static files HTTP server, as a global tool.
 
 ![overview](./screenshot.png)
 
-## Install
+## Overview
 
-Requirements:
+### What is Static?
 
-1. [.NET 10 SDK](http://dot.net/)
+Serve a directory over HTTP, optionally mirror and cache missing files, or enable WebDAV according to command-line options.
 
-Run the following command to install this tool:
+## Installation
+
+<a name="install"></a>
+Install the CLI with the [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0):
 
 ```bash
 dotnet tool install --global Aiursoft.Static
 ```
 
-## Usage
-
-After getting the binary, run it directly in the terminal.
+Update an existing installation:
 
 ```bash
-$ static.exe  --help
-Description:
-  Start a static file server.
-
-Usage:
-  static [options]
-
-Options:
-  -p, --port <port>                  The port to listen for the server. [default: 8080]
-  --path <path>                      The folder to start the server. [default: .]
-  --allow-directory-browsing         Allow directory browsing the server files under the path. This options if conflict with --mirror. [default: False]
-  --mirror <mirror>                  The website to mirror. Automatically proxy the file if the file is not found in the server. This option if conflict with 
-                                     --allow-directory-browsing. []
-  --cache-mirror                     Cache the mirrored files. This will save the mirrored files to the server's disk. [default: False]
-  --enable-webdav                    Enable WebDAV for the server. This is a read-only WebDAV server. [default: False]
-  --enable-webdav-write              Enable write access for the WebDAV server. This will allow the client to write files to the server. However, this requires the server 
-                                     process to run with write permission. [default: False]
-  --not-found-page <not-found-page>  Specifies a custom 404 page to be served when a requested file is not found. This file should reside in the server's root folder. If 
-                                     this option is left blank or not set, a default 404 response will be returned. []
-  --version                          Show version information
-  -?, -h, --help                     Show help and usage information
-
-It will start an HTTP server on http://localhost:8080.
+dotnet tool update --global Aiursoft.Static
 ```
 
-## Mirror cache behavior
-
-With `--mirror` and `--cache-mirror`, successful GET responses for missing
-local files are stored under `--path`. Extensionless paths such as `InRelease`
-and `by-hash/SHA256/<digest>` are stored as files. Only paths ending in `/`
-are stored as `index.html`; this does not enable directory browsing or change
-the existing directory URL serving behavior in mirror mode.
-
-Cache files are published by a same-directory atomic rename. Subsequent file
-requests use the static file server, including conditional GET and HEAD support.
-Cache write failures are logged but do not prevent serving the upstream body.
-
-The cache has no automatic expiration or upstream revalidation. Deployments
-must expire mutable repository metadata together on an appropriate schedule;
-local ETags describe the cached file, not the current upstream version.
-
-When upgrading from the old extension-based cache layout, move aside or remove
-confirmed legacy `<file>/index.html` cache directories before warming the new
-cache. This also applies to extensionless `by-hash` entries. Static deliberately
-does not remove existing directories automatically. For an APT mirror, a
-maintenance-time move of the `ubuntu/dists` cache to a backup outside the served
-root permits fresh indexes without discarding the `ubuntu/pool` package cache.
-
-## Install for all users
-
-You can install this tool for all users by running the following command:
+Remove the CLI:
 
 ```bash
-sudo apt install -y dotnet9
+dotnet tool uninstall --global Aiursoft.Static
+```
+
+<a name="install-for-all-users"></a>
+**Install for all users**
+
+With the .NET 10 SDK already installed, install this tool for all users:
+
+```bash
 sudo dotnet tool install Aiursoft.Static --tool-path /opt/static || sudo dotnet tool update Aiursoft.Static --tool-path /opt/static
 sudo chmod +x /opt/static/static
 ```
 
 Then you can run the tool by `/opt/static/static`.
 
-## Install for systemd
+<a name="install-for-systemd"></a>
+**Install for systemd**
 
 You can make it a systemd service by creating a file `/etc/systemd/system/static.service` with the following content:
 
@@ -130,7 +94,8 @@ sudo systemctl start static
 sudo systemctl status static
 ```
 
-## Run in Docker
+<a name="run-in-docker"></a>
+**Run in Docker**
 
 First, install Docker [here](https://docs.docker.com/get-docker/).
 
@@ -154,7 +119,68 @@ The docker image has the following context:
 | Binary path | /app                                   |
 | Data path   | /data                                  |
 
-## Use Aiursoft.Static to build your own Docker image
+## Usage
+
+Run the command to see available options:
+
+```bash
+static --help
+```
+
+After getting the binary, run it directly in the terminal.
+
+```bash
+$ static.exe  --help
+Description:
+  Start a static file server.
+
+Usage:
+  static [options]
+
+Options:
+  -p, --port <port>                  The port to listen for the server. [default: 8080]
+  --path <path>                      The folder to start the server. [default: .]
+  --allow-directory-browsing         Allow directory browsing the server files under the path. This options if conflict with --mirror. [default: False]
+  --mirror <mirror>                  The website to mirror. Automatically proxy the file if the file is not found in the server. This option if conflict with
+                                     --allow-directory-browsing. []
+  --cache-mirror                     Cache the mirrored files. This will save the mirrored files to the server's disk. [default: False]
+  --enable-webdav                    Enable WebDAV for the server. This is a read-only WebDAV server. [default: False]
+  --enable-webdav-write              Enable write access for the WebDAV server. This will allow the client to write files to the server. However, this requires the server
+                                     process to run with write permission. [default: False]
+  --not-found-page <not-found-page>  Specifies a custom 404 page to be served when a requested file is not found. This file should reside in the server's root folder. If
+                                     this option is left blank or not set, a default 404 response will be returned. []
+  --version                          Show version information
+  -?, -h, --help                     Show help and usage information
+
+It will start an HTTP server on http://localhost:8080.
+```
+
+<a name="mirror-cache-behavior"></a>
+### Mirror cache behavior
+
+With `--mirror` and `--cache-mirror`, successful GET responses for missing
+local files are stored under `--path`. Extensionless paths such as `InRelease`
+and `by-hash/SHA256/<digest>` are stored as files. Only paths ending in `/`
+are stored as `index.html`; this does not enable directory browsing or change
+the existing directory URL serving behavior in mirror mode.
+
+Cache files are published by a same-directory atomic rename. Subsequent file
+requests use the static file server, including conditional GET and HEAD support.
+Cache write failures are logged but do not prevent serving the upstream body.
+
+The cache has no automatic expiration or upstream revalidation. Deployments
+must expire mutable repository metadata together on an appropriate schedule;
+local ETags describe the cached file, not the current upstream version.
+
+When upgrading from the old extension-based cache layout, move aside or remove
+confirmed legacy `<file>/index.html` cache directories before warming the new
+cache. This also applies to extensionless `by-hash` entries. Static deliberately
+does not remove existing directories automatically. For an APT mirror, a
+maintenance-time move of the `ubuntu/dists` cache to a backup outside the served
+root permits fresh indexes without discarding the `ubuntu/pool` package cache.
+
+<a name="use-aiursoftstatic-to-build-your-own-docker-image"></a>
+### Use Aiursoft.Static to build your own Docker image
 
 You can use Aiursoft.Static to build your own Docker image. Here is an example of a `Dockerfile`:
 
@@ -184,7 +210,8 @@ COPY --from=npm-env /app/public /data
 ENTRYPOINT [ "/app/static", "--port", "5000", "--path", "/data", "--not-found-page", "/404.html" ]
 ```
 
-## Use Aiursoft.Static in docker-compose
+<a name="use-aiursoftstatic-in-docker-compose"></a>
+### Use Aiursoft.Static in docker-compose
 
 You can use Aiursoft.Static in docker-compose. Here is an example of a `docker-compose.yml`:
 
@@ -211,10 +238,53 @@ services:
     entrypoint: ["sh", "-c", "/app/static --port 5000 --path /data/mirror/archive.ubuntu.com --allow-directory-browsing"]
 ```
 
+## Configuration
+
+Configuration is supplied through command-line options. Use `static --help` for the current reference; the preserved help output is shown in Usage.
+
+**Defaults and additional options**
+
+The default root is the current directory and the default CLI port is `8080`; the published Docker image starts with port `5000` and root `/data`. Directory browsing, mirror caching and WebDAV are disabled unless explicitly enabled. `--max-speed-kbps` limits each connection in KiB/s (`0`, the default, means unlimited; `10240` means 10 MiB/s). Directory browsing and `--mirror` are mutually exclusive.
+
+The process needs access to the served directory. Mirror caching and WebDAV writes additionally require write permission; the systemd and Docker examples above show the corresponding process and persistent-directory setup.
+
+## Development
+
+Install the [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0).
+
+From the repository root, restore and build:
+
+```bash
+dotnet restore Aiursoft.Static.sln
+dotnet build Aiursoft.Static.sln --no-restore
+```
+
+<a name="run-locally"></a>
+<a name="local-run"></a>
+Run the tool from source, with the prerequisites and configuration above:
+
+```bash
+dotnet run --project src/Aiursoft.Static/Aiursoft.Static.csproj -- --help
+```
+
+<a name="run-in-microsoft-visual-studio"></a>
+In Microsoft Visual Studio, open `Aiursoft.Static.sln`, select `Aiursoft.Static` as the startup project and press `F5`. Configure the arguments and environment for the task you want to run.
+
+Run the existing tests:
+
+```bash
+dotnet test Aiursoft.Static.sln --no-restore
+```
+
+
 ## How to contribute
 
 There are many ways to contribute to the project: logging bugs, submitting pull requests, reporting issues, and creating suggestions.
 
-Even if you with push rights on the repository, you should create a personal fork and create feature branches there when you need them. This keeps the main repository clean and your workflow cruft out of sight.
+Even if you have push rights on the repository, you should create a personal fork and create feature branches there when you need them. This keeps the main repository clean and your workflow cruft out of sight.
 
 We're also interested in your feedback on the future of this project. You can submit a suggestion or feature request through the issue tracker. To make this process more effective, we're asking that these include more information to help define them more clearly.
+
+## License
+
+Licensed under the [MIT License](https://github.com/AiursoftWeb/static/blob/master/LICENSE).
